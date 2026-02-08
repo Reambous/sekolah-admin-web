@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ $kategori ? 'Jurnal Refleksi ' . ucfirst($kategori) : 'Semua Jurnal Refleksi' }}
+            {{ __('Jurnal Refleksi & Catatan Harian') }}
         </h2>
     </x-slot>
 
@@ -23,13 +23,11 @@
                     @endif
 
                     <div class="mb-6 flex justify-between items-center">
-                        <h3 class="text-lg font-medium text-gray-900">
-                            {{ $kategori ? 'Daftar Catatan ' . ucfirst($kategori) : 'Semua Catatan Harian' }}
-                        </h3>
+                        <h3 class="text-lg font-medium text-gray-900">Daftar Semua Catatan</h3>
 
-                        <a href="{{ route('jurnal.create', ['kategori' => $kategori]) }}"
+                        <a href="{{ route('jurnal.create') }}"
                             class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 transition">
-                            + Tulis Jurnal
+                            + Tulis Jurnal Baru
                         </a>
                     </div>
 
@@ -42,15 +40,13 @@
                                         Tanggal</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Kategori</th>
-
+                                        Topik / Konteks</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Penulis</th>
-
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Judul</th>
+                                        Judul Refleksi</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Aksi</th>
@@ -63,10 +59,11 @@
                                             {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}
                                         </td>
 
+                                        {{-- Kolom Topik (Manual) --}}
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 border border-blue-200">
-                                                {{ ucfirst($item->kategori) }}
+                                                class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 border border-gray-300">
+                                                {{ $item->kategori }}
                                             </span>
                                         </td>
 
@@ -75,20 +72,20 @@
                                         </td>
 
                                         <td class="px-6 py-4 text-sm text-gray-900 font-medium">
-                                            {{ $item->judul_refleksi }}
+                                            {{ Str::limit($item->judul_refleksi, 40) }}
                                         </td>
 
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <a href="{{ route('jurnal.show', $item->id) }}"
-                                                class="text-blue-600 hover:text-blue-900 font-bold bg-blue-50 px-3 py-1 rounded-md transition hover:bg-blue-100">
+                                                class="text-blue-600 hover:text-blue-900 font-bold bg-blue-50 px-3 py-1 rounded transition hover:bg-blue-100">
                                                 Baca Detail
                                             </a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500 italic">
-                                            Belum ada catatan jurnal.
+                                        <td colspan="5" class="px-6 py-8 text-center text-gray-500 italic">
+                                            Belum ada catatan jurnal yang dibuat.
                                         </td>
                                     </tr>
                                 @endforelse

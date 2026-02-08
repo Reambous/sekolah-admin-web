@@ -42,7 +42,7 @@
                                 Catatan Evaluasi</label>
                             <textarea name="refleksi" id="refleksi" rows="5"
                                 placeholder="Tuliskan kendala, solusi, atau hasil kegiatan di sini..."
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">{{ old('refleksi') }}</textarea>
+                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" required>{{ old('refleksi') }}</textarea>
                             <p class="text-xs text-gray-500 mt-1">*Data ini akan dikunci setelah divalidasi Admin.</p>
                         </div>
 

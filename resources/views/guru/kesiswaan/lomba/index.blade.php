@@ -74,7 +74,8 @@
                                             @if ($firstPeserta)
                                                 <div class="text-sm font-bold text-gray-900">
                                                     {{ $firstPeserta->nama_siswa }}</div>
-                                                <div class="text-xs text-gray-500">{{ $firstPeserta->kelas }}</div>
+                                                <div class="text-xs text-gray-500">Kelas {{ $firstPeserta->kelas }}
+                                                </div>
 
                                                 @if ($totalPeserta > 1)
                                                     <div class="text-xs text-blue-600 font-semibold mt-1">

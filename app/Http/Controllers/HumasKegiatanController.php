@@ -24,17 +24,28 @@ class HumasKegiatanController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['tanggal' => 'required|date', 'nama_kegiatan' => 'required', 'refleksi' => 'required']);
+        $request->validate([
+            'tanggal' => 'required|date',
+            'nama_kegiatan' => 'required|string',
+
+            // UBAH JADI REQUIRED (Wajib)
+            'refleksi' => 'required|string',
+        ]);
+
         DB::table('humas_kegiatan')->insert([
             'user_id' => Auth::id(),
             'tanggal' => $request->tanggal,
             'nama_kegiatan' => $request->nama_kegiatan,
+
+            // HAPUS tanda tanya ganda (?? '-'), ambil langsung datanya
             'refleksi' => $request->refleksi,
+
             'status' => 'pending',
             'created_at' => now(),
             'updated_at' => now()
         ]);
-        return redirect()->route('humas.kegiatan.index')->with('success', 'Disimpan.');
+
+        return redirect()->route('humas.kegiatan.index')->with('success', 'Laporan Humas disimpan.');
     }
 
     public function show($id)
@@ -58,17 +69,30 @@ class HumasKegiatanController extends Controller
     {
         $kegiatan = DB::table('humas_kegiatan')->where('id', $id)->first();
 
+        // Pengaman Update (Kode standar)
         if (Auth::user()->role !== 'admin' && $kegiatan->status !== 'pending') {
             return redirect()->route('humas.kegiatan.index')->with('error', 'Gagal update! Data ini baru saja disetujui Admin.');
         }
 
+        $request->validate([
+            'tanggal' => 'required|date',
+            'nama_kegiatan' => 'required|string',
+
+            // UBAH JADI REQUIRED (Wajib)
+            'refleksi' => 'required|string',
+        ]);
+
         DB::table('humas_kegiatan')->where('id', $id)->update([
             'tanggal' => $request->tanggal,
             'nama_kegiatan' => $request->nama_kegiatan,
+
+            // HAPUS tanda tanya ganda (?? '-'), ambil langsung datanya
             'refleksi' => $request->refleksi,
+
             'updated_at' => now()
         ]);
-        return redirect()->route('humas.kegiatan.index')->with('success', 'Diperbarui.');
+
+        return redirect()->route('humas.kegiatan.index')->with('success', 'Data diupdate.');
     }
 
     public function destroy($id)

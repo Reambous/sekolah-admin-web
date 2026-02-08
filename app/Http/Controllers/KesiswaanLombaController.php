@@ -34,7 +34,8 @@ class KesiswaanLombaController extends Controller
             'prestasi' => 'required',
             'peserta' => 'required|array',
             'peserta.*.nama' => 'required',
-            'peserta.*.kelas' => 'required'
+            'peserta.*.kelas' => 'required',
+            'refleksi' => 'nullable|string',
         ]);
 
         $lombaId = DB::table('kesiswaan_lomba')->insertGetId([
@@ -42,7 +43,7 @@ class KesiswaanLombaController extends Controller
             'tanggal' => $request->tanggal,
             'jenis_lomba' => $request->jenis_lomba,
             'prestasi' => $request->prestasi,
-            'refleksi' => $request->refleksi,
+            'refleksi' => $request->refleksi ?? '-',
             'status' => 'pending',
             'created_at' => now(),
             'updated_at' => now()
@@ -112,11 +113,21 @@ class KesiswaanLombaController extends Controller
             return redirect()->route('kesiswaan.lomba.index')->with('error', 'Gagal update! Data ini baru saja disetujui Admin.');
         }
 
+        $request->validate([
+            'tanggal' => 'required|date',
+            'jenis_lomba' => 'required',
+            'prestasi' => 'required',
+            'peserta' => 'required|array',
+            'peserta.*.nama' => 'required',
+            'peserta.*.kelas' => 'required',
+            'refleksi' => 'nullable|string',
+        ]);
+
         DB::table('kesiswaan_lomba')->where('id', $id)->update([
             'tanggal' => $request->tanggal,
             'jenis_lomba' => $request->jenis_lomba,
             'prestasi' => $request->prestasi,
-            'refleksi' => $request->refleksi,
+            'refleksi' => $request->refleksi ?? '-',
             'updated_at' => now()
         ]);
 

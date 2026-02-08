@@ -1,8 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Laporan Kegiatan Humas') }}
-        </h2>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Laporan Kegiatan Humas') }}</h2>
     </x-slot>
 
     <div class="py-12">
@@ -15,22 +13,18 @@
                             {{ session('success') }}
                         </div>
                     @endif
-                    {{-- PESAN ERROR (MERAH) --}}
+
                     @if (session('error'))
-                        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                            role="alert">
-                            <strong class="font-bold">Peringatan!</strong>
-                            <span class="block sm:inline">{{ session('error') }}</span>
+                        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                            <strong>Peringatan!</strong> {{ session('error') }}
                         </div>
                     @endif
 
                     <div class="mb-6 flex justify-between items-center">
-                        <h3 class="text-lg font-medium text-gray-900">Daftar Kegiatan</h3>
-
-                        {{-- Admin dan Guru boleh tambah data --}}
+                        <h3 class="text-lg font-medium text-gray-900">Daftar Kegiatan Hubungan Masyarakat</h3>
                         <a href="{{ route('humas.kegiatan.create') }}"
                             class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 transition">
-                            + Input Kegiatan Baru
+                            + Input Kegiatan
                         </a>
                     </div>
 
@@ -41,16 +35,12 @@
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tanggal</th>
-                                    {{-- Kolom Guru hanya muncul untuk Admin --}}
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Guru</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Nama Kegiatan</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Refleksi</th>
+                                        Guru</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Status</th>
@@ -63,58 +53,56 @@
                                 @forelse($kegiatan as $item)
                                     <tr class="hover:bg-gray-50 transition">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $item->tanggal }}</td>
-
+                                            {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 font-medium">
+                                            {{ $item->nama_kegiatan }}
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-blue-600">
                                             {{ $item->nama_guru }}
                                         </td>
-
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $item->nama_kegiatan }}</td>
-                                        <td class="px-6 py-4 text-sm text-gray-500 italic truncate max-w-xs">
-                                            {{ Str::limit($item->refleksi, 40) }}</td>
-
-                                        {{-- Status Badge --}}
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             @if ($item->status == 'pending')
                                                 <span
-                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                                    class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded border border-yellow-200">
+                                                    ⏳ Pending
+                                                </span>
                                             @else
                                                 <span
-                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Disetujui</span>
+                                                    class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded border border-green-200">
+                                                    ✅ Disetujui
+                                                </span>
                                             @endif
                                         </td>
-
-                                        {{-- KOLOM AKSI (LOGIKA TOMBOL) --}}
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex items-center gap-2">
 
                                                 {{-- 1. TOMBOL DETAIL (Semua Bisa Lihat) --}}
                                                 <a href="{{ route('humas.kegiatan.show', $item->id) }}"
-                                                    class="text-blue-600 hover:text-blue-900 font-bold bg-blue-50 px-3 py-1 rounded-md transition hover:bg-blue-100">
+                                                    class="text-blue-600 hover:text-blue-900 font-bold bg-blue-50 px-3 py-1 rounded transition hover:bg-blue-100">
                                                     Lihat Detail
                                                 </a>
 
-                                                {{-- 2. TOMBOL VALIDASI (Hanya Admin & Jika Pending) --}}
-                                                {{-- Admin tetap butuh akses cepat ACC tanpa harus masuk detail --}}
+                                                {{-- 2. TOMBOL ACC (Khusus Admin & Pending) --}}
                                                 @if (Auth::user()->role == 'admin' && $item->status == 'pending')
                                                     <form action="{{ route('humas.kegiatan.approve', $item->id) }}"
                                                         method="POST">
                                                         @csrf @method('PATCH')
-                                                        <button type="submit"
-                                                            class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded shadow ml-2 transition">
+                                                        <button
+                                                            class="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs ml-2 font-bold shadow transition">
                                                             ✓ ACC
                                                         </button>
                                                     </form>
                                                 @endif
-                                                {{-- TOMBOL BATAL ACC --}}
+
+                                                {{-- 3. TOMBOL BATAL ACC (Khusus Admin & Disetujui) --}}
                                                 @if (Auth::user()->role == 'admin' && $item->status == 'disetujui')
                                                     <form action="{{ route('humas.kegiatan.unapprove', $item->id) }}"
                                                         method="POST"
-                                                        onsubmit="return confirm('Batalkan validasi ini?')">
+                                                        onsubmit="return confirm('Batalkan validasi data ini?')">
                                                         @csrf @method('PATCH')
                                                         <button type="submit"
-                                                            class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded shadow ml-2 transition">
+                                                            class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs ml-2 font-bold shadow transition">
                                                             X Batal
                                                         </button>
                                                     </form>
@@ -125,15 +113,13 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">
-                                            Belum ada data kegiatan.
-                                        </td>
+                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500 italic">Belum ada
+                                            laporan kegiatan Humas.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
-
                 </div>
             </div>
         </div>
