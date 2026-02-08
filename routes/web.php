@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KesiswaanKegiatanController;
 use App\Http\Controllers\JurnalRefleksiController;
+use App\Http\Controllers\KesiswaanLombaController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -44,6 +46,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // --- ROUTE JURNAL REFLEKSI ---
     Route::resource('jurnal', JurnalRefleksiController::class);
+
+    // --- ROUTE LOMBA KESISWAAN ---
+    Route::resource('kesiswaan/lomba', KesiswaanLombaController::class, ['names' => 'kesiswaan.lomba']);
+
+    // Route Khusus Approve Lomba
+    Route::patch('/kesiswaan/lomba/{id}/approve', [KesiswaanLombaController::class, 'approve'])
+        ->name('kesiswaan.lomba.approve');
 });
 
 require __DIR__ . '/auth.php';

@@ -9,38 +9,37 @@ use Illuminate\Support\Facades\Auth;
 class JurnalRefleksiController extends Controller
 {
     // 1. DAFTAR JURNAL
-    // 1. DAFTAR JURNAL (Bisa Filter Kategori)
     public function index(Request $request)
     {
-        $user = Auth::user();
-        $kategori = $request->query('kategori'); // Ambil data dari link (misal: ?kategori=humas)
+        $kategori = $request->query('kategori');
 
-        // Mulai Query Dasar
+        // LOGIKA BARU: Tampilkan SEMUA data
         $query = DB::table('jurnal_refleksi')
             ->join('users', 'jurnal_refleksi.user_id', '=', 'users.id')
             ->select('jurnal_refleksi.*', 'users.name as nama_guru')
             ->orderBy('tanggal', 'desc');
 
-        // Filter 1: Jika Guru, hanya lihat punya sendiri. Admin lihat semua.
-        if ($user->role !== 'admin') {
-            $query->where('jurnal_refleksi.user_id', $user->id);
-        }
-
-        // Filter 2: Jika ada kategori spesifik yang diminta
+        // HAPUS filter "where user_id", biarkan semua guru melihat semua catatan
+        // Filter Kategori tetap jalan
         if ($kategori) {
             $query->where('jurnal_refleksi.kategori', $kategori);
         }
 
         $jurnals = $query->get();
 
-        // Kirim data jurnal & info kategori yang sedang aktif ke View
         return view('guru.jurnal.index', compact('jurnals', 'kategori'));
     }
 
     // 2. FORM TAMBAH
-    public function create()
+    // Terima parameter request untuk menangkap ?kategori=humas
+    public function create(Request $request)
     {
-        return view('guru.jurnal.create');
+        $kategori = $request->query('kategori'); // Ambil nilai kategori
+
+        // Jika user nakal mencoba masuk tanpa kategori, default ke 'umum' atau tolak
+        if (!$kategori) $kategori = 'umum';
+
+        return view('guru.jurnal.create', compact('kategori'));
     }
 
     // 3. SIMPAN DATA
@@ -78,10 +77,7 @@ class JurnalRefleksiController extends Controller
 
         if (!$jurnal) abort(404);
 
-        // Cek Akses (Admin boleh, Pemilik boleh)
-        if (Auth::user()->role !== 'admin' && $jurnal->user_id !== Auth::id()) {
-            abort(403);
-        }
+        // HAPUS LOGIKA ABORT(403) DI SINI.
 
         return view('guru.jurnal.show', compact('jurnal'));
     }

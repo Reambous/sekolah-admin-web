@@ -32,9 +32,10 @@
                             class="absolute z-50 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
                             style="display: none;">
                             <div class="py-1">
-                                <a href="#"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Kegiatan Lomba</a>
-                                <a href="{{ route('kesiswaan.kegiatan.index') }}"
+                                <a href="{{ route('kesiswaan.lomba.index') }}"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Kegiatan Lomba
+                                </a> <a href="{{ route('kesiswaan.kegiatan.index') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Kegiatan
                                     Kesiswaan</a>
                                 <a href="{{ route('jurnal.index', ['kategori' => 'kesiswaan']) }}"

@@ -34,11 +34,9 @@
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tanggal</th>
                                     {{-- Kolom Guru hanya muncul untuk Admin --}}
-                                    @if (Auth::user()->role == 'admin')
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Guru</th>
-                                    @endif
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Guru</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Nama Kegiatan</th>
@@ -59,12 +57,9 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             {{ $item->tanggal }}</td>
 
-                                        {{-- Nama Guru (Hanya untuk Admin) --}}
-                                        @if (Auth::user()->role == 'admin')
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-blue-600">
-                                                {{ $item->nama_guru ?? 'Admin' }}
-                                            </td>
-                                        @endif
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-blue-600">
+                                            {{ $item->nama_guru }}
+                                        </td>
 
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                             {{ $item->nama_kegiatan }}</td>

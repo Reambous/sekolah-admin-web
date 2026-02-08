@@ -12,21 +12,12 @@ class KesiswaanKegiatanController extends Controller
     // 1. TAMPILKAN DATA (INDEX)
     public function index()
     {
-        // Jika Guru: Lihat data sendiri. Jika Admin: Lihat semua.
-        $user = Auth::user();
-
-        if ($user->role == 'guru') {
-            $kegiatan = DB::table('kesiswaan_kegiatan')
-                ->where('user_id', $user->id)
-                ->orderBy('created_at', 'desc')
-                ->get();
-        } else {
-            $kegiatan = DB::table('kesiswaan_kegiatan')
-                ->join('users', 'kesiswaan_kegiatan.user_id', '=', 'users.id')
-                ->select('kesiswaan_kegiatan.*', 'users.name as nama_guru')
-                ->orderBy('created_at', 'desc')
-                ->get();
-        }
+        // LOGIKA BARU: Tampilkan SEMUA data untuk SEMUA role
+        $kegiatan = DB::table('kesiswaan_kegiatan')
+            ->join('users', 'kesiswaan_kegiatan.user_id', '=', 'users.id')
+            ->select('kesiswaan_kegiatan.*', 'users.name as nama_guru') // Ambil nama guru
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('guru.kesiswaan.kegiatan.index', compact('kegiatan'));
     }
@@ -34,20 +25,16 @@ class KesiswaanKegiatanController extends Controller
     // 8. TAMPILKAN DETAIL DATA
     public function show($id)
     {
-        // Join tabel users agar kita tahu siapa nama penginputnya
         $kegiatan = DB::table('kesiswaan_kegiatan')
             ->join('users', 'kesiswaan_kegiatan.user_id', '=', 'users.id')
             ->select('kesiswaan_kegiatan.*', 'users.name as nama_guru')
             ->where('kesiswaan_kegiatan.id', $id)
             ->first();
 
-        // Cek Akses: Hanya Admin atau Pemilik Data yang boleh lihat
-        $user = Auth::user();
         if (!$kegiatan) abort(404);
 
-        if ($user->role !== 'admin' && $kegiatan->user_id !== $user->id) {
-            abort(403, 'Anda tidak memiliki akses melihat detail ini.');
-        }
+        // HAPUS BAGIAN "if ($user->role !== 'admin' ... abort(403))"
+        // Biarkan semua guru bisa melihat detail ini.
 
         return view('guru.kesiswaan.kegiatan.show', compact('kegiatan'));
     }
