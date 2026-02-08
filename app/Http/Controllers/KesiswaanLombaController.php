@@ -8,239 +8,166 @@ use Illuminate\Support\Facades\Auth;
 
 class KesiswaanLombaController extends Controller
 {
-    // 1. INDEX (DAFTAR DATA)
     public function index()
     {
-        // Query: Tampilkan SEMUA data, urutkan dari tanggal terbaru
         $lombas = DB::table('kesiswaan_lomba')
             ->join('users', 'kesiswaan_lomba.user_id', '=', 'users.id')
-            ->select('kesiswaan_lomba.*', 'users.name as nama_guru') // Ambil nama guru penginput
-            ->orderBy('tanggal', 'desc')
-            ->get();
+            ->select('kesiswaan_lomba.*', 'users.name as nama_guru')
+            ->orderBy('tanggal', 'desc')->get();
 
-        // Load data peserta manual
         foreach ($lombas as $lomba) {
-            $lomba->peserta = DB::table('kesiswaan_lomba_peserta')
-                ->where('kesiswaan_lomba_id', $lomba->id)
-                ->get();
+            $lomba->peserta = DB::table('kesiswaan_lomba_peserta')->where('kesiswaan_lomba_id', $lomba->id)->get();
         }
-
         return view('guru.kesiswaan.lomba.index', compact('lombas'));
     }
 
-    // 2. CREATE (FORM)
     public function create()
     {
         return view('guru.kesiswaan.lomba.create');
     }
 
-    // 3. STORE (SIMPAN)
     public function store(Request $request)
     {
-        // Validasi
         $request->validate([
-            'tanggal'     => 'required|date',
-            'jenis_lomba' => 'required|string',
-            'prestasi'    => 'required|string',
-            'peserta'     => 'required|array',
-            'peserta.*.kelas' => 'required|string',
-            'peserta.*.nama' => 'required|string', // Isinya bisa "Budi, Siti, Ahmad"
+            'tanggal' => 'required|date',
+            'jenis_lomba' => 'required',
+            'prestasi' => 'required',
+            'peserta' => 'required|array',
+            'peserta.*.nama' => 'required',
+            'peserta.*.kelas' => 'required'
         ]);
 
-        // 1. Simpan Data Induk (Lombanya)
         $lombaId = DB::table('kesiswaan_lomba')->insertGetId([
-            'user_id'     => Auth::id(),
-            'tanggal'     => $request->tanggal,
+            'user_id' => Auth::id(),
+            'tanggal' => $request->tanggal,
             'jenis_lomba' => $request->jenis_lomba,
-            'prestasi'    => $request->prestasi,
-            'refleksi'    => $request->refleksi,
-            'status'      => 'pending',
-            'created_at'  => now(),
-            'updated_at'  => now(),
+            'prestasi' => $request->prestasi,
+            'refleksi' => $request->refleksi,
+            'status' => 'pending',
+            'created_at' => now(),
+            'updated_at' => now()
         ]);
 
-        // 2. LOGIKA CERDAS: Pecah Nama Berdasarkan Koma
         $pesertaData = [];
-
         foreach ($request->peserta as $row) {
-            // Pecah string nama berdasarkan koma
-            // Contoh: "Budi, Siti " -> Menjadi ["Budi", " Siti "]
             $nama_list = explode(',', $row['nama']);
-
             foreach ($nama_list as $nama) {
-                // Bersihkan spasi di awal/akhir nama (trim)
-                $nama_bersih = trim($nama);
-
-                if (!empty($nama_bersih)) {
+                if (trim($nama)) {
                     $pesertaData[] = [
                         'kesiswaan_lomba_id' => $lombaId,
-                        'nama_siswa' => $nama_bersih,
-                        'kelas'      => strtoupper($row['kelas']), // Otomatis Huruf Besar
+                        'nama_siswa' => trim($nama),
+                        'kelas' => strtoupper($row['kelas']),
                         'created_at' => now(),
-                        'updated_at' => now(),
+                        'updated_at' => now()
                     ];
                 }
             }
         }
+        if ($pesertaData) DB::table('kesiswaan_lomba_peserta')->insert($pesertaData);
 
-        // Simpan semua sekaligus
-        if (count($pesertaData) > 0) {
-            DB::table('kesiswaan_lomba_peserta')->insert($pesertaData);
-        }
-
-        return redirect()->route('kesiswaan.lomba.index')->with('success', 'Data tim berhasil disimpan! Sistem otomatis memisahkan nama.');
+        return redirect()->route('kesiswaan.lomba.index')->with('success', 'Data Lomba tersimpan.');
     }
 
-    // 4. SHOW (DETAIL)
     public function show($id)
     {
         $lomba = DB::table('kesiswaan_lomba')
             ->join('users', 'kesiswaan_lomba.user_id', '=', 'users.id')
             ->select('kesiswaan_lomba.*', 'users.name as nama_guru')
-            ->where('kesiswaan_lomba.id', $id)
-            ->first();
+            ->where('kesiswaan_lomba.id', $id)->first();
 
         if (!$lomba) abort(404);
-
-        // AMBIL DATA PESERTA
-        $peserta = DB::table('kesiswaan_lomba_peserta')
-            ->where('kesiswaan_lomba_id', $id)
-            ->get();
-
-        // HAPUS LOGIKA ABORT(403) DI SINI.
+        $peserta = DB::table('kesiswaan_lomba_peserta')->where('kesiswaan_lomba_id', $id)->get();
 
         return view('guru.kesiswaan.lomba.show', compact('lomba', 'peserta'));
     }
 
-    // 5. EDIT
     public function edit($id)
     {
-        // 1. Ambil Data Lomba
         $lomba = DB::table('kesiswaan_lomba')->where('id', $id)->first();
-
-        // Cek Akses
         if (Auth::user()->role !== 'admin') {
-            if ($lomba->user_id !== Auth::id()) abort(403);
-            if ($lomba->status !== 'pending') abort(403);
+            if ($lomba->user_id !== Auth::id() || $lomba->status !== 'pending') abort(403);
         }
 
-        // 2. Ambil Peserta
-        $rawPeserta = DB::table('kesiswaan_lomba_peserta')
-            ->where('kesiswaan_lomba_id', $id)
-            ->get();
-
-        // 3. LOGIKA PENGGABUNGAN (Grouping)
-        // Kita ubah data database menjadi format yang dimengerti AlpineJS di view
-        // Format Target: [{kelas: 'XII RPL', nama: 'Budi, Siti'}, {kelas: 'X TKJ', nama: 'Dedi'}]
-
+        // Logic Grouping Peserta untuk Edit
+        $rawPeserta = DB::table('kesiswaan_lomba_peserta')->where('kesiswaan_lomba_id', $id)->get();
         $grouped = [];
         foreach ($rawPeserta as $p) {
-            $kelas = $p->kelas;
-            if (!isset($grouped[$kelas])) {
-                $grouped[$kelas] = [];
-            }
-            $grouped[$kelas][] = $p->nama_siswa;
+            $grouped[$p->kelas][] = $p->nama_siswa;
         }
-
         $formattedPeserta = [];
-        foreach ($grouped as $kelas => $namaList) {
-            $formattedPeserta[] = [
-                'kelas' => $kelas,
-                'nama' => implode(', ', $namaList) // Gabungkan nama pakai koma
-            ];
+        foreach ($grouped as $kelas => $names) {
+            $formattedPeserta[] = ['kelas' => $kelas, 'nama' => implode(', ', $names)];
         }
-
-        // Jika kosong (jaga-jaga), kasih 1 baris kosong
-        if (empty($formattedPeserta)) {
-            $formattedPeserta[] = ['kelas' => '', 'nama' => ''];
-        }
+        if (empty($formattedPeserta)) $formattedPeserta[] = ['kelas' => '', 'nama' => ''];
 
         return view('guru.kesiswaan.lomba.edit', compact('lomba', 'formattedPeserta'));
     }
 
-    // 6. UPDATE
     public function update(Request $request, $id)
     {
-        // 1. Validasi
-        $request->validate([
-            'tanggal'     => 'required|date',
-            'jenis_lomba' => 'required|string',
-            'prestasi'    => 'required|string',
-            'peserta'     => 'required|array',
-            'peserta.*.kelas' => 'required|string',
-            'peserta.*.nama' => 'required|string',
-        ]);
-
-        // Cek Status
         $lomba = DB::table('kesiswaan_lomba')->where('id', $id)->first();
-        if (Auth::user()->role !== 'admin' && $lomba->status !== 'pending') abort(403);
 
-        // 2. Update Data Induk
+        // PENGAMAN UPDATE
+        if (Auth::user()->role !== 'admin' && $lomba->status !== 'pending') {
+            return redirect()->route('kesiswaan.lomba.index')->with('error', 'Gagal update! Data ini baru saja disetujui Admin.');
+        }
+
         DB::table('kesiswaan_lomba')->where('id', $id)->update([
-            'tanggal'     => $request->tanggal,
+            'tanggal' => $request->tanggal,
             'jenis_lomba' => $request->jenis_lomba,
-            'prestasi'    => $request->prestasi,
-            'refleksi'    => $request->refleksi,
-            'updated_at'  => now(),
+            'prestasi' => $request->prestasi,
+            'refleksi' => $request->refleksi,
+            'updated_at' => now()
         ]);
 
-        // 3. LOGIKA UPDATE PESERTA (RESET TOTAL)
-        // Cara paling aman: Hapus semua peserta lama, lalu masukkan yang baru
         DB::table('kesiswaan_lomba_peserta')->where('kesiswaan_lomba_id', $id)->delete();
 
-        // 4. Masukkan Peserta Baru (Sama seperti logika Store)
         $pesertaData = [];
         foreach ($request->peserta as $row) {
-            $nama_list = explode(',', $row['nama']); // Pecah koma
+            $nama_list = explode(',', $row['nama']);
             foreach ($nama_list as $nama) {
-                $nama_bersih = trim($nama);
-                if (!empty($nama_bersih)) {
+                if (trim($nama)) {
                     $pesertaData[] = [
                         'kesiswaan_lomba_id' => $id,
-                        'nama_siswa' => $nama_bersih,
-                        'kelas'      => strtoupper($row['kelas']),
+                        'nama_siswa' => trim($nama),
+                        'kelas' => strtoupper($row['kelas']),
                         'created_at' => now(),
-                        'updated_at' => now(),
+                        'updated_at' => now()
                     ];
                 }
             }
         }
+        if ($pesertaData) DB::table('kesiswaan_lomba_peserta')->insert($pesertaData);
 
-        if (count($pesertaData) > 0) {
-            DB::table('kesiswaan_lomba_peserta')->insert($pesertaData);
-        }
-
-        return redirect()->route('kesiswaan.lomba.index')->with('success', 'Data lomba berhasil diperbarui.');
+        return redirect()->route('kesiswaan.lomba.index')->with('success', 'Data Lomba diperbarui.');
     }
 
-    // 7. DESTROY
     public function destroy($id)
     {
         $lomba = DB::table('kesiswaan_lomba')->where('id', $id)->first();
 
-        if (Auth::user()->role !== 'admin' && $lomba->status !== 'pending') abort(403);
+        // PENGAMAN DELETE
+        if ($lomba->status == 'disetujui') {
+            return back()->with('error', 'Data Valid tidak bisa dihapus! Admin harus Batal ACC dulu.');
+        }
+
+        if (Auth::user()->role !== 'admin' && $lomba->user_id !== Auth::id()) abort(403);
 
         DB::table('kesiswaan_lomba')->where('id', $id)->delete();
         return redirect()->route('kesiswaan.lomba.index')->with('success', 'Data dihapus.');
     }
 
-    // 8. APPROVE (KHUSUS ADMIN)
     public function approve($id)
     {
         if (Auth::user()->role !== 'admin') abort(403);
-
         DB::table('kesiswaan_lomba')->where('id', $id)->update(['status' => 'disetujui']);
-        return back()->with('success', 'Data lomba divalidasi.');
+        return back()->with('success', 'Lomba disetujui.');
     }
-    // 9. BATALKAN ACC (UNAPPROVE)
+
     public function unapprove($id)
     {
         if (Auth::user()->role !== 'admin') abort(403);
-
-        DB::table('kesiswaan_lomba')
-            ->where('id', $id)
-            ->update(['status' => 'pending', 'updated_at' => now()]);
-
-        return back()->with('success', 'Status lomba dikembalikan ke Pending.');
+        DB::table('kesiswaan_lomba')->where('id', $id)->update(['status' => 'pending']);
+        return back()->with('success', 'Status lomba kembali Pending.');
     }
 }

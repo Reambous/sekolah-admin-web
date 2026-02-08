@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Laporan Kegiatan Kesiswaan') }}
+            {{ __('Laporan Kegiatan Sarpras') }}
         </h2>
     </x-slot>
 
@@ -28,7 +28,7 @@
                         <h3 class="text-lg font-medium text-gray-900">Daftar Kegiatan</h3>
 
                         {{-- Admin dan Guru boleh tambah data --}}
-                        <a href="{{ route('kesiswaan.kegiatan.create') }}"
+                        <a href="{{ route('sarpras.kegiatan.create') }}"
                             class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 transition">
                             + Input Kegiatan Baru
                         </a>
@@ -89,33 +89,32 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex items-center gap-2">
 
-                                                {{-- 1. TOMBOL DETAIL --}}
-                                                <a href="{{ route('kesiswaan.kegiatan.show', $item->id) }}"
-                                                    class="text-blue-600 hover:text-blue-900 font-bold bg-blue-50 px-3 py-1 rounded transition hover:bg-blue-100">
+                                                {{-- 1. TOMBOL DETAIL (Semua Bisa Lihat) --}}
+                                                <a href="{{ route('sarpras.kegiatan.show', $item->id) }}"
+                                                    class="text-blue-600 hover:text-blue-900 font-bold bg-blue-50 px-3 py-1 rounded-md transition hover:bg-blue-100">
                                                     Lihat Detail
                                                 </a>
 
-                                                {{-- 2. TOMBOL ACC (Muncul jika Admin & Status Pending) --}}
+                                                {{-- 2. TOMBOL VALIDASI (Hanya Admin & Jika Pending) --}}
+                                                {{-- Admin tetap butuh akses cepat ACC tanpa harus masuk detail --}}
                                                 @if (Auth::user()->role == 'admin' && $item->status == 'pending')
-                                                    <form action="{{ route('kesiswaan.kegiatan.approve', $item->id) }}"
+                                                    <form action="{{ route('sarpras.kegiatan.approve', $item->id) }}"
                                                         method="POST">
                                                         @csrf @method('PATCH')
                                                         <button type="submit"
-                                                            class="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs ml-2 font-bold shadow transition">
+                                                            class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded shadow ml-2 transition">
                                                             ✓ ACC
                                                         </button>
                                                     </form>
                                                 @endif
-
-                                                {{-- 3. TOMBOL BATAL ACC (Muncul jika Admin & Status Disetujui) --}}
+                                                {{-- TOMBOL BATAL ACC --}}
                                                 @if (Auth::user()->role == 'admin' && $item->status == 'disetujui')
-                                                    <form
-                                                        action="{{ route('kesiswaan.kegiatan.unapprove', $item->id) }}"
+                                                    <form action="{{ route('sarpras.kegiatan.unapprove', $item->id) }}"
                                                         method="POST"
-                                                        onsubmit="return confirm('Batalkan validasi data ini? Status akan kembali menjadi Pending.')">
+                                                        onsubmit="return confirm('Batalkan validasi ini?')">
                                                         @csrf @method('PATCH')
                                                         <button type="submit"
-                                                            class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs ml-2 font-bold shadow transition">
+                                                            class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded shadow ml-2 transition">
                                                             X Batal
                                                         </button>
                                                     </form>

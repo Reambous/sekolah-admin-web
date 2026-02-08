@@ -16,6 +16,12 @@
                         </div>
                     @endif
 
+                    @if (session('error'))
+                        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                            <strong>Peringatan!</strong> {{ session('error') }}
+                        </div>
+                    @endif
+
                     <div class="mb-6 flex justify-between items-center">
                         <h3 class="text-lg font-medium text-gray-900">
                             {{ $kategori ? 'Daftar Catatan ' . ucfirst($kategori) : 'Semua Catatan Harian' }}

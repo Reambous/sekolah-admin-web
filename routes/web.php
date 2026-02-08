@@ -7,6 +7,11 @@ use App\Http\Controllers\KesiswaanKegiatanController;
 use App\Http\Controllers\JurnalRefleksiController;
 use App\Http\Controllers\KesiswaanLombaController;
 use App\Http\Controllers\KurikulumKegiatanController;
+use App\Http\Controllers\HumasKegiatanController;
+use App\Http\Controllers\SarprasKegiatanController;
+
+// Route Welcome
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -65,6 +70,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // TAMBAHAN BARU:
     Route::patch('/kurikulum/kegiatan/{id}/unapprove', [KurikulumKegiatanController::class, 'unapprove'])->name('kurikulum.kegiatan.unapprove');
+
+    // --- HUMAS ---
+    Route::resource('humas/kegiatan', HumasKegiatanController::class, ['names' => 'humas.kegiatan']);
+    Route::patch('/humas/kegiatan/{id}/approve', [HumasKegiatanController::class, 'approve'])->name('humas.kegiatan.approve');
+    Route::patch('/humas/kegiatan/{id}/unapprove', [HumasKegiatanController::class, 'unapprove'])->name('humas.kegiatan.unapprove');
+
+    // --- SARPRAS ---
+    Route::resource('sarpras/kegiatan', SarprasKegiatanController::class, ['names' => 'sarpras.kegiatan']);
+    Route::patch('/sarpras/kegiatan/{id}/approve', [SarprasKegiatanController::class, 'approve'])->name('sarpras.kegiatan.approve');
+    Route::patch('/sarpras/kegiatan/{id}/unapprove', [SarprasKegiatanController::class, 'unapprove'])->name('sarpras.kegiatan.unapprove');
 });
 
 require __DIR__ . '/auth.php';
