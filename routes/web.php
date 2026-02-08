@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KesiswaanKegiatanController;
-
+use App\Http\Controllers\JurnalRefleksiController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -41,6 +41,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Hapus (Hanya Guru)
     Route::delete('/kesiswaan/kegiatan/{id}', [KesiswaanKegiatanController::class, 'destroy'])->name('kesiswaan.kegiatan.destroy');
+
+    // --- ROUTE JURNAL REFLEKSI ---
+    Route::resource('jurnal', JurnalRefleksiController::class);
 });
 
 require __DIR__ . '/auth.php';
