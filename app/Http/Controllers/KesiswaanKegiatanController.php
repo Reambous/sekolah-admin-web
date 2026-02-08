@@ -161,4 +161,22 @@ class KesiswaanKegiatanController extends Controller
 
         return redirect()->route('kesiswaan.kegiatan.index')->with('success', 'Data berhasil dihapus.');
     }
+
+    // 9. BATALKAN ACC (UNAPPROVE)
+    // 9. BATALKAN ACC (UNAPPROVE)
+    public function unapprove($id)
+    {
+        // Hanya Admin yang boleh
+        if (Auth::user()->role !== 'admin') abort(403);
+
+        // Update status jadi pending
+        DB::table('kesiswaan_kegiatan')
+            ->where('id', $id)
+            ->update([
+                'status' => 'pending',
+                'updated_at' => now()
+            ]);
+
+        return back()->with('success', 'Status berhasil dikembalikan ke Pending.');
+    }
 }

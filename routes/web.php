@@ -6,7 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KesiswaanKegiatanController;
 use App\Http\Controllers\JurnalRefleksiController;
 use App\Http\Controllers\KesiswaanLombaController;
-
+use App\Http\Controllers\KurikulumKegiatanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -35,6 +35,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/kesiswaan/kegiatan', [KesiswaanKegiatanController::class, 'store'])->name('kesiswaan.kegiatan.store');
     Route::patch('/kesiswaan/kegiatan/{id}/approve', [KesiswaanKegiatanController::class, 'approve'])
         ->name('kesiswaan.kegiatan.approve');
+    Route::patch('/kesiswaan/kegiatan/{id}/unapprove', [KesiswaanKegiatanController::class, 'unapprove'])->name('kesiswaan.kegiatan.unapprove');
+
     // Lihat Detail
     Route::get('/kesiswaan/kegiatan/{id}/detail', [KesiswaanKegiatanController::class, 'show'])->name('kesiswaan.kegiatan.show');
     // Edit & Update (Hanya Guru)
@@ -53,6 +55,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route Khusus Approve Lomba
     Route::patch('/kesiswaan/lomba/{id}/approve', [KesiswaanLombaController::class, 'approve'])
         ->name('kesiswaan.lomba.approve');
+
+    // TAMBAHAN BARU:
+    Route::patch('/kesiswaan/lomba/{id}/unapprove', [KesiswaanLombaController::class, 'unapprove'])->name('kesiswaan.lomba.unapprove');
+
+    // --- ROUTE KURIKULUM ---
+    Route::resource('kurikulum/kegiatan', KurikulumKegiatanController::class, ['names' => 'kurikulum.kegiatan']);
+    Route::patch('/kurikulum/kegiatan/{id}/approve', [KurikulumKegiatanController::class, 'approve'])->name('kurikulum.kegiatan.approve');
+
+    // TAMBAHAN BARU:
+    Route::patch('/kurikulum/kegiatan/{id}/unapprove', [KurikulumKegiatanController::class, 'unapprove'])->name('kurikulum.kegiatan.unapprove');
 });
 
 require __DIR__ . '/auth.php';

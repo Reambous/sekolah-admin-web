@@ -124,6 +124,18 @@
                                                         </button>
                                                     </form>
                                                 @endif
+                                                {{-- TOMBOL BATAL ACC --}}
+                                                @if (Auth::user()->role == 'admin' && $item->status == 'disetujui')
+                                                    <form action="{{ route('kesiswaan.lomba.unapprove', $item->id) }}"
+                                                        method="POST"
+                                                        onsubmit="return confirm('Batalkan validasi lomba ini?')">
+                                                        @csrf @method('PATCH')
+                                                        <button type="submit"
+                                                            class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded shadow ml-2 transition">
+                                                            X Batal
+                                                        </button>
+                                                    </form>
+                                                @endif
 
                                             </div>
                                         </td>

@@ -232,4 +232,15 @@ class KesiswaanLombaController extends Controller
         DB::table('kesiswaan_lomba')->where('id', $id)->update(['status' => 'disetujui']);
         return back()->with('success', 'Data lomba divalidasi.');
     }
+    // 9. BATALKAN ACC (UNAPPROVE)
+    public function unapprove($id)
+    {
+        if (Auth::user()->role !== 'admin') abort(403);
+
+        DB::table('kesiswaan_lomba')
+            ->where('id', $id)
+            ->update(['status' => 'pending', 'updated_at' => now()]);
+
+        return back()->with('success', 'Status lomba dikembalikan ke Pending.');
+    }
 }
