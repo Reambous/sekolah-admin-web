@@ -9,7 +9,7 @@ use App\Http\Controllers\KesiswaanLombaController;
 use App\Http\Controllers\KurikulumKegiatanController;
 use App\Http\Controllers\HumasKegiatanController;
 use App\Http\Controllers\SarprasKegiatanController;
-
+use App\Http\Controllers\BeritaController;
 // Route Welcome
 
 
@@ -80,6 +80,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('sarpras/kegiatan', SarprasKegiatanController::class, ['names' => 'sarpras.kegiatan']);
     Route::patch('/sarpras/kegiatan/{id}/approve', [SarprasKegiatanController::class, 'approve'])->name('sarpras.kegiatan.approve');
     Route::patch('/sarpras/kegiatan/{id}/unapprove', [SarprasKegiatanController::class, 'unapprove'])->name('sarpras.kegiatan.unapprove');
+
+    // --- BERITA & PENGUMUMAN ---
+    Route::get('/berita', [BeritaController::class, 'index'])->name('berita.index');
+
+    // CRUD Berita (Admin)
+    Route::get('/berita/create', [BeritaController::class, 'create'])->name('berita.create');
+    Route::post('/berita', [BeritaController::class, 'store'])->name('berita.store');
+    Route::get('/berita/{id}/edit', [BeritaController::class, 'edit'])->name('berita.edit'); // BARU
+    Route::put('/berita/{id}', [BeritaController::class, 'update'])->name('berita.update');   // BARU
+    Route::delete('/berita/{id}', [BeritaController::class, 'destroy'])->name('berita.destroy');
+
+    Route::get('/berita/{id}', [BeritaController::class, 'show'])->name('berita.show');
+
+    // Komentar
+    Route::post('/berita/{id}/comment', [BeritaController::class, 'postComment'])->name('berita.comment');
+    Route::delete('/komentar/{id}', [BeritaController::class, 'deleteComment'])->name('berita.comment.destroy');
+    // Edit Komentar (BARU)
+    Route::get('/komentar/{id}/edit', [BeritaController::class, 'editComment'])->name('berita.comment.edit');
+    Route::put('/komentar/{id}', [BeritaController::class, 'updateComment'])->name('berita.comment.update');
 });
 
 require __DIR__ . '/auth.php';
