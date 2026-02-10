@@ -57,14 +57,13 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 5. TABEL HUMAS KEGIATAN
         Schema::create('humas_kegiatan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Guru yang input
             $table->date('tanggal');
-            $table->string('nama_kegiatan');
-            $table->text('refleksi');
-            $table->enum('status', ['pending', 'disetujui'])->default('pending');
+            $table->string('nama_kegiatan'); // Misal: Kunjungan Industri, Terima Tamu
+            $table->text('refleksi');        // Laporan hasil
+            $table->string('status')->default('pending'); // pending, disetujui
             $table->timestamps();
         });
 
@@ -73,9 +72,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->date('tanggal');
-            $table->string('nama_kegiatan');
+            $table->string('nama_kegiatan'); // Misal: Perbaikan AC, Pengecekan Lab
             $table->text('refleksi');
-            $table->enum('status', ['pending', 'disetujui'])->default('pending');
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
 

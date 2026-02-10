@@ -67,7 +67,8 @@
                         Berita
                     </a>
 
-                    <a href="#" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition">
+                    <a href="{{ route('ijin.index') }}"
+                        class="text-sm font-medium text-gray-500 hover:text-gray-900 transition {{ request()->routeIs('ijin.*') ? 'text-gray-900 font-bold border-b-2 border-blue-500' : '' }}">
                         Ijin
                     </a>
 

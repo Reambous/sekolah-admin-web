@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('ijin', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Siapa yang ijin
-            $table->string('jenis_ijin'); // Sakit, Izin Pribadi, Dinas Luar, Cuti
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            // $table->string('jenis_ijin'); <--- INI DIHAPUS
             $table->date('mulai');
-            $table->date('selesai'); // Biar bisa ijin lebih dari 1 hari
-            $table->text('alasan');
-            $table->string('bukti_foto')->nullable(); // Foto surat dokter / kegiatan
-            $table->string('status')->default('pending'); // pending, disetujui, ditolak
+            $table->date('selesai');
+            $table->text('alasan'); // Keterangan
+            $table->string('bukti_foto')->nullable();
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }

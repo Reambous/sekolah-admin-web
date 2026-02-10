@@ -10,11 +10,14 @@ use App\Http\Controllers\KurikulumKegiatanController;
 use App\Http\Controllers\HumasKegiatanController;
 use App\Http\Controllers\SarprasKegiatanController;
 use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\IjinController;
 // Route Welcome
 
 
+// Hapus atau Ubah bagian ini:
 Route::get('/', function () {
-    return view('welcome');
+    // return view('welcome'); // <-- KODE LAMA
+    return redirect()->route('login'); // <-- KODE BARU (Langsung ke Login)
 });
 
 
@@ -99,6 +102,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Edit Komentar (BARU)
     Route::get('/komentar/{id}/edit', [BeritaController::class, 'editComment'])->name('berita.comment.edit');
     Route::put('/komentar/{id}', [BeritaController::class, 'updateComment'])->name('berita.comment.update');
+
+    // --- PERIZINAN ---
+    Route::get('/ijin', [IjinController::class, 'index'])->name('ijin.index');
+    Route::get('/ijin/create', [IjinController::class, 'create'])->name('ijin.create');
+    Route::post('/ijin', [IjinController::class, 'store'])->name('ijin.store');
+
+    // BARU: Detail, Edit, Update
+    Route::get('/ijin/{id}/edit', [IjinController::class, 'edit'])->name('ijin.edit');
+    Route::put('/ijin/{id}', [IjinController::class, 'update'])->name('ijin.update');
+    Route::get('/ijin/{id}', [IjinController::class, 'show'])->name('ijin.show'); // Taruh paling bawah agar tidak bentrok
+
+    Route::delete('/ijin/{id}', [IjinController::class, 'destroy'])->name('ijin.destroy');
+
+    // Approval
+    Route::patch('/ijin/{id}/approve', [IjinController::class, 'approve'])->name('ijin.approve');
+    Route::patch('/ijin/{id}/reject', [IjinController::class, 'reject'])->name('ijin.reject');
 });
 
 require __DIR__ . '/auth.php';
