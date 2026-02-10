@@ -72,6 +72,13 @@
                         Ijin
                     </a>
 
+                    @if (Auth::user()->role == 'admin')
+                        <a href="{{ route('users.index') }}"
+                            class="text-sm font-medium text-gray-500 hover:text-gray-900 transition {{ request()->routeIs('users.*') ? 'text-gray-900 font-bold border-b-2 border-blue-500' : '' }}">
+                            Kelola Akun
+                        </a>
+                    @endif
+
                 </div>
             </div>
 

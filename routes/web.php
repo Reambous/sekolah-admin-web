@@ -11,6 +11,7 @@ use App\Http\Controllers\HumasKegiatanController;
 use App\Http\Controllers\SarprasKegiatanController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\IjinController;
+use App\Http\Controllers\UserController;
 // Route Welcome
 
 
@@ -53,6 +54,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Hapus (Hanya Guru)
     Route::delete('/kesiswaan/kegiatan/{id}', [KesiswaanKegiatanController::class, 'destroy'])->name('kesiswaan.kegiatan.destroy');
+
+    // TAMBAHKAN INI UNTUK HAPUS BANYAK (CHECKLIST)
+    Route::post('/kegiatan/bulk-delete', [KesiswaanKegiatanController::class, 'bulkDestroy'])->name('kegiatan.bulk_delete');
 
     // --- ROUTE JURNAL REFLEKSI ---
     Route::resource('jurnal', JurnalRefleksiController::class);
@@ -118,6 +122,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Approval
     Route::patch('/ijin/{id}/approve', [IjinController::class, 'approve'])->name('ijin.approve');
     Route::patch('/ijin/{id}/reject', [IjinController::class, 'reject'])->name('ijin.reject');
+
+    // --- MANAJEMEN USER (ADMIN) ---
+    Route::resource('users', UserController::class);
 });
 
 require __DIR__ . '/auth.php';
