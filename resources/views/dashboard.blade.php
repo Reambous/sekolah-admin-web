@@ -36,7 +36,7 @@
                 {{-- KARTU 2: JURNAL SAYA --}}
                 <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex items-center justify-between">
                     <div>
-                        <p class="text-gray-500 text-xs font-bold uppercase">Jurnal Saya</p>
+                        <p class="text-gray-500 text-xs font-bold uppercase">Refleksi Saya</p>
                         <h4 class="text-2xl font-bold text-blue-600">{{ $stats['jurnal_saya'] }}</h4>
                         <p class="text-xs text-gray-400">Total Catatan</p>
                     </div>
@@ -101,8 +101,8 @@
                                     + Buat Berita
                                 </a>
                                 <a href="{{ route('download.semua') }}"
-                                    class="px-2 py-1 bg-red-50 text-red-700 border border-red-200 rounded font-bold text-sm hover:bg-red-100 transition">
-                                    📊 Download semuaLaporan (Excel)
+                                    class="px-2 py-1 bg-red-50 text-red-700 border border-red-200 rounded font-bold text-sm hover:bg-red-200 hover:border-red-300 transition">
+                                    📊 Download Semua Laporan (Excel)
                                 </a>
                                 {{-- Tombol Export Excel --}}
                             @endif

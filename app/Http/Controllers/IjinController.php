@@ -16,15 +16,20 @@ class IjinController extends Controller
     {
         $query = DB::table('ijin')
             ->join('users', 'ijin.user_id', '=', 'users.id')
-            ->select('ijin.*', 'users.name as nama_guru')
+            ->select('ijin.*', 'users.name as nama_guru', 'users.role as role_pembuat')
             ->orderBy('created_at', 'desc');
 
         // LOGIKA: Admin lihat semua, Guru cuma lihat punya sendiri
+        // Jika user yang login BUKAN ADMIN (Guru) -> Jalankan filter khusus
         if (Auth::user()->role !== 'admin') {
-            $query->where('user_id', Auth::id());
+            $query->where(function ($q) {
+                $q->where('ijin.user_id', Auth::id())   // 1. Lihat punya sendiri
+                    ->orWhere('users.role', 'admin');     // 2. ATAU lihat punya user yang role-nya admin
+            });
         }
 
-        $data_ijin = $query->get();
+        // Ambil datanya urut dari yang terbaru
+        $data_ijin = $query->orderBy('ijin.created_at', 'desc')->get();
 
         return view('ijin.index', compact('data_ijin'));
     }
