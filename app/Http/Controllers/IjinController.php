@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Exports\IjinExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class IjinController extends Controller
 {
@@ -185,6 +187,9 @@ class IjinController extends Controller
         \Illuminate\Support\Facades\DB::table('ijin')->whereIn('id', $request->ids)->delete();
         return back()->with('success', 'Data ijin terpilih dihapus.');
     }
-
+    public function exportExcel()
+    {
+        return Excel::download(new IjinExport, 'rekap-ijin-' . now()->format('Y-m-d') . '.xlsx');
+    }
     // ... fungsi approve, reject, destroy ada di bawah ...
 }

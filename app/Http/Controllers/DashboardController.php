@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\LaporanSemuaExport; // Pastikan ini ada!
+use Maatwebsite\Excel\Facades\Excel;
 
 class DashboardController extends Controller
 {
@@ -48,5 +50,10 @@ class DashboardController extends Controller
             ->get();
 
         return view('dashboard', compact('stats', 'berita_terbaru', 'ijin_terakhir', 'jurnal_terakhir'));
+    }
+
+    public function downloadSemua()
+    {
+        return Excel::download(new LaporanSemuaExport, 'rekap-Semua-kegiatan-' . now()->format('Y-m-d') . '.xlsx');
     }
 }

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\KesiswaanExport; // Pastikan ini ada!
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class KesiswaanKegiatanController extends Controller
 {
@@ -128,5 +131,10 @@ class KesiswaanKegiatanController extends Controller
         \Illuminate\Support\Facades\DB::table('kesiswaan_kegiatan')->whereIn('id', $request->ids)->delete();
 
         return back()->with('success', 'Data terpilih berhasil dihapus.');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new KesiswaanExport, 'rekap-kesiswaan-kegiatan-' . now()->format('Y-m-d') . '.xlsx');
     }
 }

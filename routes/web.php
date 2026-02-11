@@ -42,6 +42,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/berita/export-excel', [BeritaController::class, 'exportExcel'])->name('berita.export');
 
+    Route::get('/ijin/export', [IjinController::class, 'exportExcel'])->name('ijin.export');
+    Route::get('/jurnal/export', [JurnalRefleksiController::class, 'exportExcel'])->name('jurnal.export');
+    Route::get('/sarpras/export', [SarprasKegiatanController::class, 'exportExcel'])->name('sarpras.export');
+    Route::get('/humas/kegiatan/export', [HumasKegiatanController::class, 'exportExcel'])->name('humas.kegiatan.export');
+    Route::get('/kurikulum/kegiatan/export', [KurikulumKegiatanController::class, 'exportExcel'])->name('kurikulum.kegiatan.export');
+    Route::get('/kesiswaan/lomba/export', [KesiswaanLombaController::class, 'exportExcel'])->name('kesiswaan.lomba.export');
+    Route::get('/kesiswaan/kegiatan/export', [KesiswaanKegiatanController::class, 'exportExcel'])->name('kesiswaan.kegiatan.export');
+
+    Route::get('/download-semua', [DashboardController::class, 'downloadSemua'])->name('download.semua');
+
     // Route resource berita yang sudah ada (biarkan saja)
     Route::resource('berita', BeritaController::class);
 

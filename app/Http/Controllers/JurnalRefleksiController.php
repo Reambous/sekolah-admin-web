@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\JurnalExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class JurnalRefleksiController extends Controller
 {
@@ -118,5 +120,10 @@ class JurnalRefleksiController extends Controller
         $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:jurnal_refleksi,id']);
         \Illuminate\Support\Facades\DB::table('jurnal_refleksi')->whereIn('id', $request->ids)->delete();
         return back()->with('success', 'Jurnal terpilih dihapus.');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new JurnalExport, 'rekap-jurnal-' . now()->format('Y-m-d') . '.xlsx');
     }
 }

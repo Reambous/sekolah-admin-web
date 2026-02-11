@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\HumasExport; // Pastikan ini ada!
+use Maatwebsite\Excel\Facades\Excel;
 
 class HumasKegiatanController extends Controller
 {
@@ -127,5 +129,9 @@ class HumasKegiatanController extends Controller
         $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:humas_kegiatan,id']);
         \Illuminate\Support\Facades\DB::table('humas_kegiatan')->whereIn('id', $request->ids)->delete();
         return back()->with('success', 'Data humas terpilih dihapus.');
+    }
+    public function exportExcel()
+    {
+        return Excel::download(new HumasExport, 'rekap-humas-kegiatan-' . now()->format('Y-m-d') . '.xlsx');
     }
 }

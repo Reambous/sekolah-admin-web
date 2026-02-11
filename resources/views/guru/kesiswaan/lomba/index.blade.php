@@ -27,6 +27,9 @@
                                     Hapus Terpilih
                                 </button>
                             @endif
+                            <a href="{{ route('kesiswaan.lomba.export') }}"
+                                class="px-2 py-1 bg-green-600 text-white rounded font-bold text-sm hover:bg-green-700 transition">📥
+                                Excel</a>
                         </div>
 
                         {{-- Tombol Tambah --}}

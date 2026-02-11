@@ -80,23 +80,29 @@
                         <h4 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
                             🚀 Akses Cepat
                         </h4>
+
+
                         <div class="flex flex-wrap gap-3">
                             <a href="{{ route('ijin.create') }}"
-                                class="px-4 py-2 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded font-bold text-sm hover:bg-yellow-100 transition">
+                                class="px-2 py-1 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded font-bold text-sm hover:bg-yellow-100 transition">
                                 + Ajukan Ijin
                             </a>
                             <a href="{{ route('jurnal.create') }}"
-                                class="px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded font-bold text-sm hover:bg-blue-100 transition">
+                                class="px-2 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded font-bold text-sm hover:bg-blue-100 transition">
                                 + Tulis Refleksi
                             </a>
                             <a href="{{ route('sarpras.kegiatan.create') }}"
-                                class="px-4 py-2 bg-purple-50 text-purple-700 border border-purple-200 rounded font-bold text-sm hover:bg-purple-100 transition">
+                                class="px-2 py-1 bg-purple-50 text-purple-700 border border-purple-200 rounded font-bold text-sm hover:bg-purple-100 transition">
                                 + Tulis Sarpras
                             </a>
                             @if (Auth::user()->role == 'admin')
                                 <a href="{{ route('berita.create') }}"
-                                    class="px-4 py-2 bg-green-50 text-green-700 border border-green-200 rounded font-bold text-sm hover:bg-green-100 transition">
+                                    class="px-2 py-1 bg-green-50 text-green-700 border border-green-200 rounded font-bold text-sm hover:bg-green-100 transition">
                                     + Buat Berita
+                                </a>
+                                <a href="{{ route('download.semua') }}"
+                                    class="px-2 py-1 bg-red-50 text-red-700 border border-red-200 rounded font-bold text-sm hover:bg-red-100 transition">
+                                    📊 Download semuaLaporan (Excel)
                                 </a>
                                 {{-- Tombol Export Excel --}}
                             @endif

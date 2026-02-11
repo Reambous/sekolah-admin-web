@@ -28,6 +28,9 @@
                                 class="bg-red-100 text-red-700 px-3 py-1 rounded text-xs font-bold hover:bg-red-200 border border-red-200 transition">
                                 Hapus Terpilih
                             </button>
+                            <a href="{{ route('ijin.export') }}"
+                                class="px-2 py-1 bg-green-600 text-white rounded font-bold text-sm hover:bg-green-700 transition">📥
+                                Excel</a>
                         @endif
                     </div>
 

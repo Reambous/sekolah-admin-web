@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\SarprasExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class SarprasKegiatanController extends Controller
 {
@@ -103,5 +106,10 @@ class SarprasKegiatanController extends Controller
         $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:sarpras_kegiatan,id']);
         \Illuminate\Support\Facades\DB::table('sarpras_kegiatan')->whereIn('id', $request->ids)->delete();
         return back()->with('success', 'Data sarpras terpilih dihapus.');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new SarprasExport, 'rekap-sarpras-' . now()->format('Y-m-d') . '.xlsx');
     }
 }

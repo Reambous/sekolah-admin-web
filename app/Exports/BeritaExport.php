@@ -9,8 +9,9 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithColumnWidths; // <-- Ganti ShouldAutoSize dengan ini
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Maatwebsite\Excel\Concerns\WithTitle;
 
-class BeritaExport implements FromCollection, WithHeadings, WithMapping, WithColumnWidths, WithStyles
+class BeritaExport implements FromCollection, WithHeadings, WithMapping, WithColumnWidths, WithStyles, WithTitle
 {
     /**
      * Ambil data dari database
@@ -47,7 +48,7 @@ class BeritaExport implements FromCollection, WithHeadings, WithMapping, WithCol
     public function columnWidths(): array
     {
         return [
-            'A' => 4,   // ID (Kecil)
+            'A' => 3,   // ID (Kecil)
             'B' => 15,  // Tanggal
             'C' => 15,  // Judul (Sedang)
             'D' => 15,  // Penulis
@@ -89,5 +90,9 @@ class BeritaExport implements FromCollection, WithHeadings, WithMapping, WithCol
             $linkGambar,
             $linkLampiran,
         ];
+    }
+    public function title(): string
+    {
+        return 'Laporan Berita Sekolah'; // <--- Ganti sesuai nama file (Misal: 'Lomba', 'Kesiswaan')
     }
 }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\KurikulumExport; // Pastikan ini ada!
+use Maatwebsite\Excel\Facades\Excel;
 
 class KurikulumKegiatanController extends Controller
 {
@@ -105,5 +107,9 @@ class KurikulumKegiatanController extends Controller
         $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:kurikulum_kegiatan,id']);
         \Illuminate\Support\Facades\DB::table('kurikulum_kegiatan')->whereIn('id', $request->ids)->delete();
         return back()->with('success', 'Data kurikulum terpilih dihapus.');
+    }
+    public function exportExcel()
+    {
+        return Excel::download(new KurikulumExport, 'rekap-kurikulum-kegiatan-' . now()->format('Y-m-d') . '.xlsx');
     }
 }
