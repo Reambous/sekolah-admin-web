@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Exports\BeritaExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BeritaController extends Controller
 {
@@ -238,5 +240,14 @@ class BeritaController extends Controller
         $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:berita,id']);
         \Illuminate\Support\Facades\DB::table('berita')->whereIn('id', $request->ids)->delete();
         return back()->with('success', 'Berita terpilih dihapus.');
+    }
+
+    // 2. TAMBAHKAN FUNGSI INI DI DALAM CLASS BeritaController
+    public function exportExcel()
+    {
+        // Nama file saat didownload: laporan-berita-(tanggal).xlsx
+        $namaFile = 'laporan-berita-' . now()->format('Y-m-d') . '.xlsx';
+
+        return Excel::download(new BeritaExport, $namaFile);
     }
 }

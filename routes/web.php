@@ -40,6 +40,11 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
 
 
+    Route::get('/berita/export-excel', [BeritaController::class, 'exportExcel'])->name('berita.export');
+
+    // Route resource berita yang sudah ada (biarkan saja)
+    Route::resource('berita', BeritaController::class);
+
     Route::post('/kesiswaan/kegiatan/bulk-delete', [KesiswaanKegiatanController::class, 'bulkDestroy'])
         ->name('kesiswaan.kegiatan.bulk_delete');
 
