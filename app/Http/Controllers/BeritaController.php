@@ -218,4 +218,12 @@ class BeritaController extends Controller
 
         return redirect()->route('berita.show', $k->berita_id)->with('success', 'Komentar berhasil diedit.');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin') abort(403);
+        $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:berita,id']);
+        \Illuminate\Support\Facades\DB::table('berita')->whereIn('id', $request->ids)->delete();
+        return back()->with('success', 'Berita terpilih dihapus.');
+    }
 }

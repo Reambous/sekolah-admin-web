@@ -1,95 +1,72 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Detail Kegiatan Humas') }}</h2>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Detail Kegiatan') }}</h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
 
-                    <div class="border-b pb-4 mb-6">
+                <div class="p-8 border-b border-gray-200">
+
+                    <div class="mb-6">
                         <span
                             class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">
                             HUMAS
                         </span>
-                        <h1 class="text-3xl font-bold text-gray-900 mt-2">{{ $kegiatan->nama_kegiatan }}</h1>
 
-                        <div class="flex flex-col sm:flex-row gap-4 mt-3 text-sm text-gray-600">
+                        {{-- JUDUL: break-words agar turun ke bawah --}}
+                        <h1 class="text-3xl font-extrabold text-gray-900 mt-2 mb-2 leading-tight break-words">
+                            {{ $kegiatan->nama_kegiatan }}
+                        </h1>
+
+                        <div class="flex items-center gap-4 text-sm text-gray-500">
                             <span>📅
                                 {{ \Carbon\Carbon::parse($kegiatan->tanggal)->translatedFormat('l, d F Y') }}</span>
-                            <span>👤 Guru: <span
-                                    class="font-semibold text-blue-600">{{ $kegiatan->nama_guru }}</span></span>
-                        </div>
 
-                        <div class="mt-4">
-                            @if ($kegiatan->status == 'disetujui')
-                                <span
-                                    class="text-green-700 font-bold text-sm bg-green-100 px-3 py-1 rounded border border-green-200">
-                                    ✅ Disetujui / Valid
-                                </span>
-                            @else
-                                <span
-                                    class="text-yellow-700 font-bold text-sm bg-yellow-100 px-3 py-1 rounded border border-yellow-200">
-                                    ⏳ Menunggu Validasi (Pending)
-                                </span>
-                            @endif
+                            {{-- Jam (Ambil dari waktu input/created_at) --}}
+                            <span class="text-xs text-gray-500 mt-1">
+                                🕒 {{ \Carbon\Carbon::parse($kegiatan->created_at)->format('H:i') }} WIB
+                            </span>
+                            <span>👤 {{ $kegiatan->nama_guru }}</span>
                         </div>
                     </div>
 
                     <div class="mb-8">
-                        <h4 class="font-bold text-gray-700 mb-2">Refleksi / Keterangan:</h4>
-                        <div class="bg-gray-50 p-5 rounded-lg border text-gray-800 leading-relaxed whitespace-pre-line">
-                            {{ $kegiatan->refleksi ?: '-' }}
+                        <h4 class="font-bold text-gray-900 mb-2 border-b pb-1">Keterangan / Laporan:</h4>
+
+                        {{-- 
+                            whitespace-pre-line : Menjaga enter/paragraf
+                            break-words         : Memaksa teks panjang turun
+                            text-justify        : Meratakan kanan-kiri
+                        --}}
+                        <div
+                            class="prose max-w-none text-gray-800 text-base leading-relaxed whitespace-pre-line break-words text-justify bg-gray-50 p-6 rounded-lg border border-gray-100">
+                            {{ $kegiatan->refleksi ?? 'Tidak ada keterangan detail.' }}
                         </div>
                     </div>
 
-                    <div class="flex justify-between items-center pt-6 border-t border-gray-100 mt-4">
+                    <div class="flex justify-between items-center pt-6 border-t border-gray-100">
                         <a href="{{ route('humas.kegiatan.index') }}"
-                            class="text-gray-600 font-medium hover:text-gray-900 px-4 py-2 rounded hover:bg-gray-100 transition">
+                            class="text-gray-600 font-bold text-sm hover:text-gray-900">
                             &larr; Kembali
                         </a>
 
-                        <div class="flex gap-3">
-                            @php
-                                $isAdmin = Auth::user()->role == 'admin';
-                                $isOwner = $kegiatan->user_id == Auth::id();
-                                $isPending = $kegiatan->status == 'pending';
-                                $isValid = $kegiatan->status == 'disetujui';
-                            @endphp
-
-                            {{-- TOMBOL EDIT (Admin ATAU Pemilik yg Pending) --}}
-                            @if ($isAdmin || ($isOwner && $isPending))
+                        <div class="flex gap-2">
+                            @if (Auth::user()->role == 'admin' || $kegiatan->user_id == Auth::id())
                                 <a href="{{ route('humas.kegiatan.edit', $kegiatan->id) }}"
-                                    class="bg-indigo-600 text-white px-5 py-2 rounded font-bold hover:bg-indigo-700 shadow transition">
+                                    class="bg-yellow-500 text-white px-4 py-2 rounded font-bold text-sm hover:bg-yellow-600 transition">
                                     Edit
                                 </a>
-                            @endif
-
-                            {{-- TOMBOL HAPUS (HANYA JIKA PENDING) --}}
-                            @if ($isPending && ($isAdmin || $isOwner))
                                 <form action="{{ route('humas.kegiatan.destroy', $kegiatan->id) }}" method="POST"
-                                    onsubmit="return confirm('Yakin hapus data ini?')">
+                                    onsubmit="return confirm('Hapus?')">
                                     @csrf @method('DELETE')
                                     <button
-                                        class="bg-red-600 text-white px-5 py-2 rounded font-bold hover:bg-red-700 shadow transition">
+                                        class="bg-red-600 text-white px-4 py-2 rounded font-bold text-sm hover:bg-red-700 transition">
                                         Hapus
                                     </button>
                                 </form>
                             @endif
-
-                            {{-- TOMBOL BATAL ACC (KHUSUS ADMIN JIKA VALID) --}}
-                            @if ($isAdmin && $isValid)
-                                <form action="{{ route('humas.kegiatan.unapprove', $kegiatan->id) }}" method="POST"
-                                    onsubmit="return confirm('Kembalikan status ke Pending agar bisa diedit/dihapus?')">
-                                    @csrf @method('PATCH')
-                                    <button
-                                        class="bg-orange-500 text-white px-5 py-2 rounded font-bold hover:bg-orange-600 shadow transition">
-                                        Buka Gembok (Batal ACC)
-                                    </button>
-                                </form>
-                            @endif
-
                         </div>
                     </div>
 

@@ -121,4 +121,11 @@ class HumasKegiatanController extends Controller
         DB::table('humas_kegiatan')->where('id', $id)->update(['status' => 'pending']);
         return back()->with('success', 'Batal ACC.');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:humas_kegiatan,id']);
+        \Illuminate\Support\Facades\DB::table('humas_kegiatan')->whereIn('id', $request->ids)->delete();
+        return back()->with('success', 'Data humas terpilih dihapus.');
+    }
 }

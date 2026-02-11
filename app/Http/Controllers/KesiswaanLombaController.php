@@ -181,4 +181,11 @@ class KesiswaanLombaController extends Controller
         DB::table('kesiswaan_lomba')->where('id', $id)->update(['status' => 'pending']);
         return back()->with('success', 'Status lomba kembali Pending.');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:kesiswaan_lomba,id']);
+        \Illuminate\Support\Facades\DB::table('kesiswaan_lomba')->whereIn('id', $request->ids)->delete();
+        return back()->with('success', 'Data lomba terpilih dihapus.');
+    }
 }

@@ -10,59 +10,77 @@
 
                     <div class="border-b pb-4 mb-6">
                         <span
-                            class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">
+                            class=" text-blue-800 text-xs font-bold  py-1 rounded uppercase tracking-wide break-words whitespace-normal">
                             {{ $lomba->jenis_lomba }}
                         </span>
-                        <h1 class="text-2xl font-bold text-gray-900 mt-2">{{ $lomba->prestasi }}</h1>
+
+                        {{-- GANTI BAGIAN INI: Tambahkan break-words dan leading-tight --}}
+                        <h1 class="text-2xl font-bold text-gray-900 mt-2 break-words leading-tight">
+                            {{ $lomba->prestasi }}
+                        </h1>
+
+                        {{-- Sisa kode tanggal & pembimbing biarkan sama --}}
                         <div class="flex flex-col sm:flex-row gap-4 mt-2 text-sm text-gray-500">
-                            <span>📅 {{ \Carbon\Carbon::parse($lomba->tanggal)->translatedFormat('l, d F Y') }}</span>
-                            <span>👤 Pembimbing: <span
-                                    class="font-semibold text-blue-600">{{ $lomba->nama_guru }}</span></span>
-                        </div>
+                            <span>📅
+                                {{ \Carbon\Carbon::parse($lomba->tanggal)->translatedFormat('l, d F Y') }}</span>
 
-                        <div class="mt-3">
-                            @if ($lomba->status == 'disetujui')
-                                <span
-                                    class="text-green-600 font-bold text-sm bg-green-50 px-3 py-1 rounded border border-green-200">
-                                    ✅ Data Valid / Disetujui
-                                </span>
-                            @else
-                                <span
-                                    class="text-yellow-600 font-bold text-sm bg-yellow-50 px-3 py-1 rounded border border-yellow-200">
-                                    ⏳ Menunggu Validasi
-                                </span>
-                            @endif
+                            {{-- Jam (Ambil dari waktu input/created_at) --}}
+                            <span class="text-xs text-gray-500 mt-1">
+                                🕒 {{ \Carbon\Carbon::parse($lomba->created_at)->format('H:i') }} WIB
+                            </span>
+                            <span>👤 {{ $lomba->nama_guru }}</span>
                         </div>
+                        {{-- ... dst ... --}}
                     </div>
-
                     <div class="mb-8">
                         <h4 class="font-bold text-gray-700 mb-3">Daftar Anggota Tim / Peserta:</h4>
-                        <div class="border rounded-lg overflow-hidden shadow-sm">
-                            <table class="min-w-full divide-y divide-gray-200">
+
+                        <div class="border rounded-lg shadow-sm bg-white">
+                            {{-- HAPUS overflow-x-auto agar tabel dipaksa wrap ke bawah, bukan scroll ke samping --}}
+                            <table class="w-full table-fixed border-collapse">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase w-10">
-                                            No</th>
-                                        <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase">Nama
-                                            Siswa</th>
-                                        <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase">Kelas
+                                        {{-- 1. KOLOM NO (Kunci 5%) --}}
+                                        <th
+                                            class="p-3 text-left text-xs font-bold text-gray-500 uppercase border-b w-[5%]">
+                                            No
+                                        </th>
+
+                                        {{-- 2. KOLOM NAMA (Ambil 75% - Sisanya) --}}
+                                        <th
+                                            class="p-3 text-left text-xs font-bold text-gray-500 uppercase border-b w-[75%]">
+                                            Nama Siswa
+                                        </th>
+
+                                        {{-- 3. KOLOM KELAS (Kunci 20% - Agar selalu terlihat) --}}
+                                        <th
+                                            class="p-3 text-left text-xs font-bold text-gray-500 uppercase border-b w-[20%]">
+                                            Kelas
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
+                                <tbody class="divide-y divide-gray-200">
                                     @forelse($peserta as $index => $p)
                                         <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-2 text-sm text-gray-500 text-center">{{ $index + 1 }}
+                                            <td class="p-3 text-sm text-gray-500 align-top border-b">
+                                                {{ $index + 1 }}
                                             </td>
-                                            <td class="px-4 py-2 text-sm font-medium text-gray-900">{{ $p->nama_siswa }}
+
+                                            {{-- NAMA: Paksa Text Wrapping --}}
+                                            <td
+                                                class="p-3 text-sm font-medium text-gray-900 align-top border-b break-words whitespace-normal">
+                                                {{ $p->nama_siswa }}
                                             </td>
-                                            <td class="px-4 py-2 text-sm text-gray-600">{{ $p->kelas }}</td>
+
+                                            <td class="p-3 text-sm text-gray-600 align-top border-b">
+                                                {{ $p->kelas }}
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="3"
-                                                class="px-4 py-2 text-sm text-red-500 italic text-center">Data peserta
-                                                belum diinput.</td>
+                                            <td colspan="3" class="p-6 text-sm text-red-500 italic text-center">
+                                                Data peserta belum diinput.
+                                            </td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -70,10 +88,15 @@
                         </div>
                     </div>
 
-                    <div class="mb-8">
+                    <div class="mb-4">
                         <h4 class="font-bold text-gray-700 mb-2">Catatan Tambahan:</h4>
-                        <div class="bg-gray-50 p-4 rounded border text-gray-700 text-sm italic leading-relaxed">
-                            "{{ $lomba->refleksi ?: 'Tidak ada catatan tambahan.' }}"
+
+                        {{-- GANTI DIV INI --}}
+                        {{-- whitespace-pre-line: Menjaga enter/paragraf --}}
+                        {{-- break-words: Memaksa kata panjang turun --}}
+                        <div
+                            class="bg-gray-50 p-4 rounded border text-gray-800 text-sm leading-relaxed whitespace-pre-line break-words text-justify">
+                            {{ $lomba->refleksi ?: 'Tidak ada catatan tambahan.' }}
                         </div>
                     </div>
 

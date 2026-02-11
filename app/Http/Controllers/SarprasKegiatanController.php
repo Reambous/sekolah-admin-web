@@ -97,4 +97,11 @@ class SarprasKegiatanController extends Controller
         DB::table('sarpras_kegiatan')->where('id', $id)->update(['status' => 'pending']);
         return back()->with('success', 'Batal ACC.');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:sarpras_kegiatan,id']);
+        \Illuminate\Support\Facades\DB::table('sarpras_kegiatan')->whereIn('id', $request->ids)->delete();
+        return back()->with('success', 'Data sarpras terpilih dihapus.');
+    }
 }

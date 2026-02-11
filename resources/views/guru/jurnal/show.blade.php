@@ -5,53 +5,56 @@
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
+                <div class="p-8 text-gray-900">
 
-                    <div class="border-b pb-4 mb-6">
-                        <span
-                            class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide border border-blue-200">
+                    {{-- HEADER: Kategori, Judul, Info --}}
+                    <div class="border-b pb-6 mb-6">
+                        <span class=" break-words text-blue-800 text-xs font-bold  py-1  uppercase tracking-wide ">
                             {{ $jurnal->kategori }}
                         </span>
 
-                        <h1 class="text-3xl font-bold text-gray-900 mt-3 leading-tight">
+                        {{-- JUDUL: break-words agar turun ke bawah --}}
+                        <h1 class="text-3xl font-extrabold text-gray-900 mt-3 mb-3 leading-tight break-words">
                             {{ $jurnal->judul_refleksi }}
                         </h1>
 
-                        <div class="flex flex-col sm:flex-row gap-4 mt-3 text-sm text-gray-600">
+                        <div class="flex flex-col sm:flex-row gap-4 text-sm text-gray-500">
+                            {{-- Tanggal --}}
                             <div class="flex items-center gap-1">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                                <span>{{ \Carbon\Carbon::parse($jurnal->tanggal)->translatedFormat('l, d F Y') }}</span>
+                                <span>📅
+                                    {{ \Carbon\Carbon::parse($jurnal->tanggal)->translatedFormat('l, d F Y') }}</span>
                             </div>
+
+                            {{-- Jam --}}
                             <div class="flex items-center gap-1">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                                <span>Penulis: <span
+                                <span>🕒 {{ \Carbon\Carbon::parse($jurnal->created_at)->format('H:i') }} WIB</span>
+                            </div>
+
+                            {{-- Penulis --}}
+                            <div class="flex items-center gap-1">
+                                <span>👤 Penulis: <span
                                         class="font-bold text-blue-600">{{ $jurnal->nama_guru }}</span></span>
                             </div>
                         </div>
                     </div>
 
+                    {{-- ISI JURNAL --}}
                     <div class="mb-8">
-                        <h4 class="font-bold text-gray-700 mb-2">Isi Catatan:</h4>
+                        <h4 class="font-bold text-gray-900 mb-2">Isi Catatan:</h4>
+
+                        {{-- KONTEN UTAMA: Rapi, Justify, Break-Words --}}
                         <div
-                            class="bg-gray-50 p-6 rounded-lg border border-gray-200 text-gray-800 leading-relaxed whitespace-pre-line text-justify">
+                            class="bg-gray-50 p-6 rounded-lg border border-gray-200 text-gray-800 text-base leading-relaxed whitespace-pre-line break-words text-justify">
                             {{ $jurnal->isi_refleksi }}
                         </div>
                     </div>
 
+                    {{-- FOOTER: TOMBOL KEMBALI & AKSI --}}
                     <div class="flex justify-between items-center pt-6 border-t border-gray-100 mt-4">
 
                         <a href="{{ route('jurnal.index') }}"
-                            class="text-gray-600 font-medium hover:text-gray-900 px-4 py-2 rounded hover:bg-gray-100 transition flex items-center gap-2">
+                            class="text-gray-600 font-bold text-sm hover:text-gray-900 px-4 py-2 rounded hover:bg-gray-100 transition flex items-center gap-2">
                             &larr; Kembali
                         </a>
 
@@ -63,7 +66,7 @@
 
                             @if ($isAdmin || $isOwner)
                                 <a href="{{ route('jurnal.edit', $jurnal->id) }}"
-                                    class="bg-indigo-600 text-white px-5 py-2 rounded font-bold hover:bg-indigo-700 shadow transition">
+                                    class="bg-indigo-600 text-white px-5 py-2 rounded font-bold hover:bg-indigo-700 shadow transition text-sm">
                                     Edit
                                 </a>
 
@@ -71,7 +74,7 @@
                                     onsubmit="return confirm('Yakin hapus catatan ini?')">
                                     @csrf @method('DELETE')
                                     <button
-                                        class="bg-red-600 text-white px-5 py-2 rounded font-bold hover:bg-red-700 shadow transition">
+                                        class="bg-red-600 text-white px-5 py-2 rounded font-bold hover:bg-red-700 shadow transition text-sm">
                                         Hapus
                                     </button>
                                 </form>

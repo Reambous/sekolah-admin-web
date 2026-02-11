@@ -99,4 +99,11 @@ class KurikulumKegiatanController extends Controller
         DB::table('kurikulum_kegiatan')->where('id', $id)->update(['status' => 'pending']);
         return back()->with('success', 'Batal ACC.');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:kurikulum_kegiatan,id']);
+        \Illuminate\Support\Facades\DB::table('kurikulum_kegiatan')->whereIn('id', $request->ids)->delete();
+        return back()->with('success', 'Data kurikulum terpilih dihapus.');
+    }
 }

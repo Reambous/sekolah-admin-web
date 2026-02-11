@@ -43,11 +43,13 @@ class IjinController extends Controller
             // VALIDASI PENTING: Tanggal selesai harus SETELAH atau SAMA dengan tanggal mulai
             'selesai' => 'required|date|after_or_equal:mulai',
             'alasan' => 'required|string',
-            'bukti_foto' => 'nullable|image|max:2048',
+            // UPDATE: Izinkan file dokumen
+            'bukti_foto' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
         ], [
-            // PESAN ERROR CUSTOM (BAHASA INDONESIA)
+            // PESAN ERROR CUSTOM
             'selesai.after_or_equal' => 'Tanggal selesai tidak boleh sebelum tanggal mulai! Harap cek kembali tanggal anda.',
             'alasan.required' => 'Keterangan/Alasan wajib diisi.',
+            'bukti_foto.mimes' => 'File harus berupa Foto (JPG/PNG) atau Dokumen (PDF/Word).',
         ]);
 
         $path = null;
@@ -151,9 +153,11 @@ class IjinController extends Controller
             'mulai' => 'required|date',
             'selesai' => 'required|date|after_or_equal:mulai',
             'alasan' => 'required|string',
-            'bukti_foto' => 'nullable|image|max:2048',
+            // PERBAIKAN DI SINI: Validasi Update harus sama dengan Store (Bisa PDF/Word)
+            'bukti_foto' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
         ], [
             'selesai.after_or_equal' => 'Tanggal selesai salah! Tidak boleh sebelum tanggal mulai.',
+            'bukti_foto.mimes' => 'File harus berupa Foto (JPG/PNG) atau Dokumen (PDF/Word).',
         ]);
 
         // Logic Foto
@@ -172,6 +176,14 @@ class IjinController extends Controller
         ]);
 
         return redirect()->route('ijin.show', $id)->with('success', 'Data pengajuan berhasil diperbarui.');
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin') abort(403);
+        $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:ijin,id']);
+        \Illuminate\Support\Facades\DB::table('ijin')->whereIn('id', $request->ids)->delete();
+        return back()->with('success', 'Data ijin terpilih dihapus.');
     }
 
     // ... fungsi approve, reject, destroy ada di bawah ...

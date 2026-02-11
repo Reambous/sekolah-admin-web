@@ -114,4 +114,19 @@ class KesiswaanKegiatanController extends Controller
         DB::table('kesiswaan_kegiatan')->where('id', $id)->update(['status' => 'pending']);
         return back()->with('success', 'Status dikembalikan ke Pending.');
     }
+
+    // HAPUS BANYAK SEKALIGUS (CHECKLIST)
+    // Hapus Banyak Sekaligus (Checklist)
+    // Tambahkan ini di paling bawah class
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:kesiswaan_kegiatan,id',
+        ]);
+
+        \Illuminate\Support\Facades\DB::table('kesiswaan_kegiatan')->whereIn('id', $request->ids)->delete();
+
+        return back()->with('success', 'Data terpilih berhasil dihapus.');
+    }
 }

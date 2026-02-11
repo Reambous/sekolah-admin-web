@@ -54,7 +54,10 @@
 
                     <div class="mb-8">
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Keterangan / Alasan</p>
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 text-gray-800 leading-relaxed">
+
+                        {{-- MODIFIKASI: Tambahkan whitespace-pre-line dan break-words --}}
+                        <div
+                            class="bg-gray-50 p-4 rounded-lg border border-gray-200 text-gray-800 leading-relaxed whitespace-pre-line break-words text-justify">
                             {{ $ijin->alasan }}
                         </div>
                     </div>
@@ -62,22 +65,63 @@
                     @if ($ijin->bukti_foto)
                         <div class="mb-8">
                             <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Bukti Lampiran</p>
-                            <div class="inline-block border p-1 rounded bg-white shadow-sm">
-                                <a href="{{ asset('storage/' . $ijin->bukti_foto) }}" target="_blank">
-                                    <img src="{{ asset('storage/' . $ijin->bukti_foto) }}"
-                                        class="max-h-64 rounded cursor-zoom-in hover:opacity-90 transition">
+
+                            @php
+                                $extension = pathinfo($ijin->bukti_foto, PATHINFO_EXTENSION);
+                                $isImage = in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif']);
+                            @endphp
+
+                            @if ($isImage)
+                                {{-- TAMPILAN JIKA FOTO --}}
+                                <div class="inline-block border p-1 rounded bg-white shadow-sm">
+                                    <a href="{{ asset('storage/' . $ijin->bukti_foto) }}" target="_blank">
+                                        <img src="{{ asset('storage/' . $ijin->bukti_foto) }}"
+                                            class="max-h-64 rounded cursor-zoom-in hover:opacity-90 transition">
+                                    </a>
+                                </div>
+                            @else
+                                {{-- TAMPILAN JIKA DOKUMEN (PDF/WORD) --}}
+                                <a href="{{ asset('storage/' . $ijin->bukti_foto) }}" target="_blank"
+                                    class="flex items-center gap-4 p-4 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition group w-full md:w-fit">
+
+                                    {{-- Ikon Dokumen --}}
+                                    <div class="bg-white p-2 rounded shadow-sm group-hover:scale-110 transition">
+                                        <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </div>
+
+                                    {{-- Info File --}}
+                                    <div>
+                                        <p class="text-sm font-bold text-gray-900">Lihat Dokumen Lampiran</p>
+                                        <p class="text-xs text-gray-500 uppercase">{{ $extension }} File</p>
+                                    </div>
+
+                                    {{-- Ikon External Link --}}
+                                    <div class="ml-auto pl-4">
+                                        <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
+                                            </path>
+                                        </svg>
+                                    </div>
                                 </a>
-                            </div>
+                            @endif
                         </div>
                     @else
                         <div
                             class="mb-8 p-4 bg-gray-50 border border-dashed border-gray-300 rounded text-center text-gray-400 italic text-sm">
-                            Tidak ada bukti foto yang dilampirkan.
+                            Tidak ada bukti yang dilampirkan.
                         </div>
                     @endif
 
                     <div class="flex justify-between items-center pt-6 border-t border-gray-100">
-                        <a href="{{ route('ijin.index') }}" class="text-gray-600 font-bold text-sm hover:text-gray-900">
+                        <a href="{{ route('ijin.index') }}"
+                            class="text-gray-600 font-bold text-sm hover:text-gray-900">
                             &larr; Kembali
                         </a>
 

@@ -111,4 +111,12 @@ class JurnalRefleksiController extends Controller
 
         return redirect()->route('jurnal.index')->with('success', 'Catatan dihapus.');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin') abort(403);
+        $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:jurnal_refleksi,id']);
+        \Illuminate\Support\Facades\DB::table('jurnal_refleksi')->whereIn('id', $request->ids)->delete();
+        return back()->with('success', 'Jurnal terpilih dihapus.');
+    }
 }

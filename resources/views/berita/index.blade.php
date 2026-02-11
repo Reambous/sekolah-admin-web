@@ -46,11 +46,14 @@
 
                         <div
                             class="flex items-center gap-2 mb-3 text-xs font-bold text-gray-500 uppercase tracking-wide">
-                            <span class="text-black">
-                                {{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('d M Y') }}
-                            </span>
-                            <span>•</span>
-                            <span>{{ substr($item->penulis, 0, 15) }}</span>
+                            <span class="font-bold text-black">📅
+                                {{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('l, d F Y - H:i') }}
+                                WIB</span>
+                            @if ($item->created_at != $item->updated_at)
+                                <span class="italic text-gray-400">(Diedit:
+                                    {{ \Carbon\Carbon::parse($item->updated_at)->format('H:i') }} WIB)</span>
+                            @endif
+                            <span>✍️ {{ $item->penulis }}</span>
                         </div>
 
                         {{-- Tambahkan class 'break-words' dan 'whitespace-normal' --}}

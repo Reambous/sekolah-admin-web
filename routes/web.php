@@ -38,6 +38,30 @@ Route::middleware('auth')->group(function () {
 // Group Route khusus yang sudah Login
 Route::middleware(['auth', 'verified'])->group(function () {
 
+
+    Route::post('/kesiswaan/kegiatan/bulk-delete', [KesiswaanKegiatanController::class, 'bulkDestroy'])
+        ->name('kesiswaan.kegiatan.bulk_delete');
+
+    // --- KESISWAAN LOMBA ---
+    Route::post('/kesiswaan/lomba/bulk-delete', [KesiswaanLombaController::class, 'bulkDestroy'])->name('kesiswaan.lomba.bulk_delete');
+
+    // --- KURIKULUM ---
+    Route::post('/kurikulum/kegiatan/bulk-delete', [KurikulumKegiatanController::class, 'bulkDestroy'])->name('kurikulum.kegiatan.bulk_delete');
+
+    // --- HUMAS ---
+    Route::post('/humas/kegiatan/bulk-delete', [HumasKegiatanController::class, 'bulkDestroy'])->name('humas.kegiatan.bulk_delete');
+
+    // --- SARPRAS ---
+    Route::post('/sarpras/kegiatan/bulk-delete', [SarprasKegiatanController::class, 'bulkDestroy'])->name('sarpras.kegiatan.bulk_delete');
+
+    // --- JURNAL REFLEKSI ---
+    Route::post('/jurnal/bulk-delete', [JurnalRefleksiController::class, 'bulkDestroy'])->name('jurnal.bulk_delete');
+
+    // --- BERITA ---
+    Route::post('/berita/bulk-delete', [BeritaController::class, 'bulkDestroy'])->name('berita.bulk_delete');
+
+    // --- IJIN ---
+    Route::post('/ijin/bulk-delete', [IjinController::class, 'bulkDestroy'])->name('ijin.bulk_delete');
     // Route Kegiatan Kesiswaan
     Route::get('/kesiswaan/kegiatan', [KesiswaanKegiatanController::class, 'index'])->name('kesiswaan.kegiatan.index');
     Route::get('/kesiswaan/kegiatan/create', [KesiswaanKegiatanController::class, 'create'])->name('kesiswaan.kegiatan.create');
@@ -56,7 +80,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/kesiswaan/kegiatan/{id}', [KesiswaanKegiatanController::class, 'destroy'])->name('kesiswaan.kegiatan.destroy');
 
     // TAMBAHKAN INI UNTUK HAPUS BANYAK (CHECKLIST)
-    Route::post('/kegiatan/bulk-delete', [KesiswaanKegiatanController::class, 'bulkDestroy'])->name('kegiatan.bulk_delete');
+
+
 
     // --- ROUTE JURNAL REFLEKSI ---
     Route::resource('jurnal', JurnalRefleksiController::class);
@@ -70,6 +95,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // TAMBAHAN BARU:
     Route::patch('/kesiswaan/lomba/{id}/unapprove', [KesiswaanLombaController::class, 'unapprove'])->name('kesiswaan.lomba.unapprove');
+
 
     // --- ROUTE KURIKULUM ---
     Route::resource('kurikulum/kegiatan', KurikulumKegiatanController::class, ['names' => 'kurikulum.kegiatan']);
