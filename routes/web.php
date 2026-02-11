@@ -12,6 +12,7 @@ use App\Http\Controllers\SarprasKegiatanController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\IjinController;
 use App\Http\Controllers\UserController;
+
 // Route Welcome
 
 
@@ -22,7 +23,7 @@ Route::get('/', function () {
 });
 
 
-// Route Dashboard yang sudah dimodifikasi
+// Route Dashboard yang sudah dimodifikasiRoute::get('/dashboard', [DashboardController::class, 'index'])
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');

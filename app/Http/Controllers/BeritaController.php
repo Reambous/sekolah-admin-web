@@ -148,6 +148,19 @@ class BeritaController extends Controller
             'updated_at' => now(),
         ]);
 
+        $berita = DB::table('berita')->where('id', $id)->first();
+
+        // 1. LOGIKA HAPUS GAMBAR LAMA (Jika dicentang)
+        if ($request->has('hapus_gambar') && $berita->gambar) {
+            Storage::disk('public')->delete($berita->gambar);
+            DB::table('berita')->where('id', $id)->update(['gambar' => null]);
+        }
+
+        // 2. LOGIKA HAPUS LAMPIRAN LAMA (Jika dicentang)
+        if ($request->has('hapus_lampiran') && $berita->lampiran) {
+            Storage::disk('public')->delete($berita->lampiran);
+            DB::table('berita')->where('id', $id)->update(['lampiran' => null]);
+        }
         return redirect()->route('berita.show', $id)->with('success', 'Berita diperbarui.');
     }
 

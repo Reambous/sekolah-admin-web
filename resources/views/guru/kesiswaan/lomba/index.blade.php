@@ -93,6 +93,8 @@
                                             </div>
                                         </td>
 
+
+
                                         {{-- KOLOM NAMA LOMBA (DIPOTONG/TRUNCATE) --}}
                                         <td class="px-4 py-3 align-middle">
                                             {{-- Ubah jadi jenis_lomba sesuai controller --}}

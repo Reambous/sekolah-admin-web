@@ -3,23 +3,50 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // Wajib ada untuk cek user login
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Ambil data user yang sedang login
-        $user = Auth::user();
+        $userId = Auth::id();
+        $role = Auth::user()->role;
 
-        // Cek Role
-        if ($user->role === 'admin') {
-            return view('admin.dashboard'); // Arahkan ke folder admin
-        } elseif ($user->role === 'guru') {
-            return view('guru.dashboard'); // Arahkan ke folder guru
-        }
+        // 1. STATISTIK RINGKAS
+        $stats = [
+            'ijin_pending' => DB::table('ijin')->where('status', 'pending')->count(),
+            'jurnal_saya' => DB::table('jurnal_refleksi')->where('user_id', $userId)->count(),
+            'berita_total' => DB::table('berita')->count(),
+            'kegiatan_sarpras' => DB::table('sarpras_kegiatan')->where('status', 'pending')->count(),
+        ];
 
-        // Jaga-jaga jika ada role lain (misal user biasa)
-        return abort(403, 'Anda tidak memiliki akses.');
+        // 2. DATA TERBARU (LIMIT 3 - 5 ITEM)
+
+        // PERBAIKAN DI SINI: Tambahkan JOIN ke tabel users agar properti 'penulis' ada
+        $berita_terbaru = DB::table('berita')
+            ->join('users', 'berita.user_id', '=', 'users.id') // Hubungkan user_id berita ke id users
+            ->select('berita.*', 'users.name as penulis')      // Ambil nama user sebagai 'penulis'
+            ->orderBy('berita.created_at', 'desc')
+            ->limit(3)
+            ->get();
+
+        // Ijin Terakhir Saya (Pribadi)
+        $ijin_terakhir = DB::table('ijin')
+            ->where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get();
+
+        // Jurnal Terakhir Saya (Pribadi)
+        $jurnal_terakhir = DB::table('jurnal_refleksi')
+            ->join('users', 'jurnal_refleksi.user_id', '=', 'users.id') // Optional: Jika perlu nama di jurnal juga
+            ->select('jurnal_refleksi.*', 'users.name as nama_guru')
+            ->where('jurnal_refleksi.user_id', $userId)
+            ->orderBy('jurnal_refleksi.created_at', 'desc')
+            ->limit(3)
+            ->get();
+
+        return view('dashboard', compact('stats', 'berita_terbaru', 'ijin_terakhir', 'jurnal_terakhir'));
     }
 }

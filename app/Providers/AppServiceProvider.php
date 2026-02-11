@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon; // <--- Tambahkan ini
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,5 +23,13 @@ class AppServiceProvider extends ServiceProvider
 
         // Fix untuk database string length (opsional tapi bagus)
         Schema::defaultStringLength(191);
+
+        // if (str_contains(request()->getHost(), 'ngrok-free.dev')) {
+        //     URL::forceScheme('https');
+        // }
+
+        if (str_contains(request()->getHost(), 'ngrok-free.app') || str_contains(request()->getHost(), 'ngrok-free.dev')) {
+            URL::forceScheme('https');
+        }
     }
 }

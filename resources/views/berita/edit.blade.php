@@ -22,55 +22,69 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6 border-b border-gray-100 pb-6">
 
+                            {{-- 1. GAMBAR SAMPUL --}}
                             <div>
                                 <label class="block text-sm font-bold text-gray-900 mb-2">Gambar Sampul</label>
 
-                                {{-- Preview Lama --}}
                                 @if ($berita->gambar)
-                                    <div
-                                        class="mb-2 p-2 bg-gray-50 border rounded text-xs text-gray-600 flex items-center gap-2">
-                                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                        <span>Gambar tersimpan saat ini.</span>
+                                    <div class="mb-3 p-3 bg-gray-50 border rounded text-xs text-gray-600">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                            <span>Gambar tersimpan saat ini.</span>
+                                        </div>
+
+                                        {{-- CHECKBOX HAPUS GAMBAR --}}
+                                        <label
+                                            class="flex items-center gap-2 mt-2 pt-2 border-t border-gray-200 cursor-pointer hover:bg-red-50 p-1 rounded transition">
+                                            <input type="checkbox" name="hapus_gambar" value="1"
+                                                class="rounded border-gray-300 text-red-600 focus:ring-red-500">
+                                            <span class="text-red-600 font-bold">Hapus Gambar Ini</span>
+                                        </label>
                                     </div>
                                 @else
                                     <p class="text-xs text-gray-400 mb-2 italic">Belum ada gambar.</p>
                                 @endif
 
-                                <input type="file" name="gambar" id="input-gambar-edit"
-                                    class="block w-full text-xs text-gray-500 file:mr-2 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 border border-gray-300 rounded cursor-pointer"
-                                    onchange="document.getElementById('nama-gambar-edit').innerText = 'Akan diganti: ' + this.files[0].name">
-
-                                <p id="nama-gambar-edit" class="text-xs text-blue-600 mt-1 font-bold italic"></p>
+                                <input type="file" name="gambar"
+                                    class="block w-full text-xs text-gray-500 file:mr-2 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 border border-gray-300 rounded cursor-pointer">
                             </div>
 
+                            {{-- 2. LAMPIRAN DOKUMEN --}}
                             <div>
                                 <label class="block text-sm font-bold text-gray-900 mb-2">Lampiran Dokumen</label>
 
-                                {{-- Preview Lama --}}
                                 @if ($berita->lampiran)
                                     <div
-                                        class="mb-2 p-2 bg-blue-50 border border-blue-100 rounded text-xs text-blue-800 flex items-center gap-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                            </path>
-                                        </svg>
-                                        <span
-                                            class="truncate w-40">{{ $berita->nama_file_asli ?? 'File Tersimpan' }}</span>
+                                        class="mb-3 p-3 bg-blue-50 border border-blue-100 rounded text-xs text-blue-800">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                                </path>
+                                            </svg>
+                                            <span
+                                                class="truncate w-40">{{ $berita->nama_file_asli ?? 'File Tersimpan' }}</span>
+                                        </div>
+
+                                        {{-- CHECKBOX HAPUS LAMPIRAN --}}
+                                        <label
+                                            class="flex items-center gap-2 mt-2 pt-2 border-t border-blue-200 cursor-pointer hover:bg-red-50 p-1 rounded transition">
+                                            <input type="checkbox" name="hapus_lampiran" value="1"
+                                                class="rounded border-gray-300 text-red-600 focus:ring-red-500">
+                                            <span class="text-red-600 font-bold">Hapus Dokumen Ini</span>
+                                        </label>
                                     </div>
                                 @else
                                     <p class="text-xs text-gray-400 mb-2 italic">Belum ada dokumen.</p>
                                 @endif
 
-                                <input type="file" name="lampiran" id="input-lampiran-edit"
-                                    class="block w-full text-xs text-gray-500 file:mr-2 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 border border-gray-300 rounded cursor-pointer"
-                                    onchange="document.getElementById('nama-lampiran-edit').innerText = 'Akan diganti: ' + this.files[0].name">
-
-                                <p id="nama-lampiran-edit" class="text-xs text-blue-600 mt-1 font-bold italic"></p>
+                                <input type="file" name="lampiran"
+                                    class="block w-full text-xs text-gray-500 file:mr-2 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 border border-gray-300 rounded cursor-pointer">
                             </div>
                         </div>
 

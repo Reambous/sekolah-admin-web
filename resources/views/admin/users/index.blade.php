@@ -43,7 +43,8 @@
                         @foreach ($users as $user)
                             <tr class="hover:bg-gray-50 transition">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-bold text-gray-900">{{ $user->name }}</div>
+                                    <div class="text-sm font-bold text-gray-900 truncate max-w-[150px]">
+                                        {{ $user->name }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-600">{{ $user->email }}</div>

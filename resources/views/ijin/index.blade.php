@@ -112,7 +112,7 @@
                                     </td>
 
                                     {{-- KOLOM NAMA GURU --}}
-                                    <td class="px-6 py-4 whitespace-nowrap align-middle">
+                                    <td class="px-6 py-4 whitespace-nowrap align-middle truncate max-w-[150px]">
                                         <div class="text-sm font-medium text-gray-900">{{ $item->nama_guru }}</div>
                                     </td>
 

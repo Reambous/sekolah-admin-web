@@ -106,7 +106,8 @@
                                             </div>
                                         </td>
 
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-blue-600">
+                                        <td
+                                            class="px-6 py-4 whitespace-nowrap text-sm font-bold text-blue-600 truncate max-w-[150px]">
                                             {{ $item->nama_guru }}
                                         </td>
 

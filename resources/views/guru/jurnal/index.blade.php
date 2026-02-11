@@ -105,7 +105,7 @@
 
                                         {{-- KOLOM PENULIS --}}
                                         <td class="px-6 py-4 whitespace-nowrap align-middle">
-                                            <div class="text-sm font-bold text-gray-700">
+                                            <div class="text-sm font-bold text-gray-700 truncate max-w-[150px]">
                                                 {{ $item->nama_guru }}
                                             </div>
                                         </td>
