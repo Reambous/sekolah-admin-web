@@ -117,16 +117,31 @@ class IjinController extends Controller
     // ... fungsi index, create, store ada di atas ...
 
     // 4. SHOW (Lihat Detail)
+    // 4. SHOW (Lihat Detail)
     public function show($id)
     {
         $ijin = DB::table('ijin')
             ->join('users', 'ijin.user_id', '=', 'users.id')
-            ->select('ijin.*', 'users.name as nama_guru')
+            // TAMBAHAN: ambil 'users.role' sebagai 'role_pemilik'
+            ->select('ijin.*', 'users.name as nama_guru', 'users.role as role_pemilik')
             ->where('ijin.id', $id)
             ->first();
 
-        // Cek Hak Akses (Admin atau Pemilik)
-        if (Auth::user()->role !== 'admin' && $ijin->user_id !== Auth::id()) abort(403);
+        if (!$ijin) abort(404);
+
+        // LOGIKA HAK AKSES BARU:
+        // Boleh lihat jika: 
+        // 1. Yang login adalah Admin
+        // 2. ATAU Yang login adalah Pemilik Ijin
+        // 3. ATAU Ijin tersebut milik seorang Admin (Transparansi)
+
+        $isAuthorized = (Auth::user()->role === 'admin') ||
+            ($ijin->user_id === Auth::id()) ||
+            ($ijin->role_pemilik === 'admin');
+
+        if (!$isAuthorized) {
+            abort(403, 'Anda tidak memiliki akses untuk melihat detail ijin guru lain.');
+        }
 
         return view('ijin.show', compact('ijin'));
     }

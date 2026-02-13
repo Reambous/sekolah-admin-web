@@ -100,14 +100,17 @@
                         </div>
                     </div>
 
-                    <div class="flex justify-between items-center pt-6 border-t border-gray-100 mt-4">
+                    <div
+                        class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 border-t border-gray-100 mt-4">
 
+                        {{-- TOMBOL KEMBALI: Di HP jadi lebar penuh, di Laptop otomatis --}}
                         <a href="{{ route('kesiswaan.lomba.index') }}"
-                            class="text-gray-600 font-medium hover:text-gray-900 px-4 py-2 rounded hover:bg-gray-100 transition">
+                            class="w-full sm:w-auto text-center text-gray-600 font-medium hover:text-gray-900 px-4 py-2 rounded hover:bg-gray-100 transition border border-gray-200 sm:border-transparent">
                             &larr; Kembali ke Daftar
                         </a>
 
-                        <div class="flex gap-3">
+                        {{-- GRUP TOMBOL AKSI --}}
+                        <div class="flex flex-row gap-3 w-full sm:w-auto justify-center">
 
                             @php
                                 $isAdmin = Auth::user()->role == 'admin';
@@ -119,28 +122,28 @@
                             @endphp
 
                             @if ($canEdit)
+                                {{-- Tombol Edit: flex-1 agar di HP bagi rata lebarnya --}}
                                 <a href="{{ route('kesiswaan.lomba.edit', $lomba->id) }}"
-                                    class="bg-indigo-600 text-white px-5 py-2 rounded font-bold hover:bg-indigo-700 shadow transition">
+                                    class="flex-1 sm:flex-none text-center bg-indigo-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-indigo-700 shadow transition text-sm">
                                     Edit Data
                                 </a>
 
+                                {{-- Tombol Hapus: flex-1 agar di HP bagi rata lebarnya --}}
                                 <form action="{{ route('kesiswaan.lomba.destroy', $lomba->id) }}" method="POST"
-                                    onsubmit="return confirm('Yakin hapus data ini?')">
+                                    class="flex-1 sm:flex-none" onsubmit="return confirm('Yakin hapus data ini?')">
                                     @csrf @method('DELETE')
-                                    <button
-                                        class="bg-red-600 text-white px-5 py-2 rounded font-bold hover:bg-red-700 shadow transition">
+                                    <button type="submit"
+                                        class="w-full bg-red-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-red-700 shadow transition text-sm">
                                         Hapus
                                     </button>
                                 </form>
                             @else
-                                {{-- Jika User adalah Pemilik tapi data sudah Valid --}}
                                 @if ($isOwner && !$isPending)
                                     <span
-                                        class="flex items-center gap-2 text-gray-400 bg-gray-100 px-4 py-2 rounded border border-gray-200 cursor-not-allowed">
+                                        class="w-full sm:w-auto flex items-center justify-center gap-2 text-gray-400 bg-gray-50 px-5 py-2 rounded-lg border border-gray-200 cursor-not-allowed text-xs font-semibold">
                                         🔒 Data Terkunci (Read Only)
                                     </span>
                                 @endif
-                                {{-- Jika Guru Lain melihat data orang lain -> Kosong (Tidak ada tombol) --}}
                             @endif
 
                         </div>

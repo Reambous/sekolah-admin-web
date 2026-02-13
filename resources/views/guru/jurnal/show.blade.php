@@ -59,10 +59,12 @@
                         </a>
 
                         <div class="flex gap-3">
+
                             @php
                                 $isAdmin = Auth::user()->role == 'admin';
                                 $isOwner = $jurnal->user_id == Auth::id();
                             @endphp
+
 
                             @if ($isAdmin || $isOwner)
                                 <a href="{{ route('jurnal.edit', $jurnal->id) }}"

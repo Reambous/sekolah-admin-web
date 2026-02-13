@@ -70,20 +70,29 @@
                         class="prose max-w-none text-gray-800 text-base leading-relaxed whitespace-pre-line text-justify break-words">
                         {{ $berita->isi ?? 'Tidak ada keterangan tambahan.' }}
                     </div>
+                    <div class="flex justify-between items-center pt-6 border-t border-gray-100">
+                        <a href="{{ route('berita.index') }}"
+                            class="text-gray-600 font-bold text-sm hover:text-gray-900">
+                            &larr; Kembali
+                        </a>
 
-                    @if (Auth::user()->role == 'admin')
-                        <div class="mt-8 pt-6 border-t border-gray-100 flex justify-end gap-3">
-                            <a href="{{ route('berita.edit', $berita->id) }}"
-                                class="px-4 py-2 bg-white border border-gray-300 rounded text-gray-700 font-bold hover:bg-gray-50 text-xs">Edit
-                                Berita</a>
-                            <form action="{{ route('berita.destroy', $berita->id) }}" method="POST"
-                                onsubmit="return confirm('Yakin hapus?')">
-                                @csrf @method('DELETE')
-                                <button
-                                    class="px-4 py-2 bg-red-600 text-white rounded font-bold hover:bg-red-700 text-xs">Hapus</button>
-                            </form>
+                        <div class="flex gap-2">
+                            @if (Auth::user()->role == 'admin' || $berita->user_id == Auth::id())
+                                <a href="{{ route('berita.edit', $berita->id) }}"
+                                    class="bg-yellow-500 text-white px-4 py-2 rounded font-bold text-sm hover:bg-yellow-600 transition">
+                                    Edit
+                                </a>
+                                <form action="{{ route('berita.destroy', $berita->id) }}" method="POST"
+                                    onsubmit="return confirm('Hapus?')">
+                                    @csrf @method('DELETE')
+                                    <button
+                                        class="bg-red-600 text-white px-4 py-2 rounded font-bold text-sm hover:bg-red-700 transition">
+                                        Hapus
+                                    </button>
+                                </form>
+                            @endif
                         </div>
-                    @endif
+                    </div>
                 </div>
 
                 <div class="bg-gray-50 p-8">
@@ -102,12 +111,15 @@
                             class="bg-black text-white px-5 py-2 rounded font-bold text-sm hover:bg-gray-800 h-fit">Kirim</button>
                     </form>
 
+
+
                     <div class="space-y-4">
                         @foreach ($komentar as $k)
                             <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
                                 <div class="flex justify-between items-start mb-1">
                                     <span class="font-bold text-gray-900 text-sm">{{ $k->nama_user }}</span>
                                     <div class="flex items-center gap-2 flex-shrink-0">
+
                                         <span
                                             class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($k->created_at)->diffForHumans() }}</span>
                                         @if (Auth::user()->role == 'admin' || $k->user_id == Auth::id())

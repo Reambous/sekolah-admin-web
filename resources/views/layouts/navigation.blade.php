@@ -110,6 +110,105 @@
                     </div>
                 </div>
             </div>
+            <div class="-mr-2 flex items-center sm:hidden">
+                <button @click="open = ! open"
+                    class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                        <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden bg-white border-t border-gray-100">
+        <div class="pt-2 pb-3 space-y-1">
+
+            <a href="{{ route('dashboard') }}"
+                class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition {{ request()->routeIs('dashboard') ? 'border-blue-500 text-blue-700 bg-blue-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }}">
+                Beranda
+            </a>
+
+            <div x-data="{ kesiswaanOpen: false }">
+                <button @click="kesiswaanOpen = !kesiswaanOpen"
+                    class="w-full flex justify-between items-center pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition focus:outline-none">
+                    <span>Kesiswaan</span>
+                    <svg :class="{ 'rotate-180': kesiswaanOpen }"
+                        class="w-4 h-4 transform transition-transform duration-200" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <div x-show="kesiswaanOpen" class="pl-6 space-y-1 bg-gray-50">
+                    <a href="{{ route('kesiswaan.lomba.index') }}"
+                        class="block py-2 pr-4 text-sm font-medium text-gray-600 hover:text-blue-700">
+                        Kegiatan Lomba
+                    </a>
+                    <a href="{{ route('kesiswaan.kegiatan.index') }}"
+                        class="block py-2 pr-4 text-sm font-medium text-gray-600 hover:text-blue-700">
+                        Kegiatan Kesiswaan
+                    </a>
+                </div>
+            </div>
+
+            <a href="{{ route('kurikulum.kegiatan.index') }}"
+                class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition {{ request()->routeIs('kurikulum.*') ? 'border-blue-500 text-blue-700 bg-blue-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }}">
+                Kurikulum
+            </a>
+
+            <a href="{{ route('humas.kegiatan.index') }}"
+                class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition {{ request()->routeIs('humas.*') ? 'border-blue-500 text-blue-700 bg-blue-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }}">
+                Humas
+            </a>
+
+            <a href="{{ route('sarpras.kegiatan.index') }}"
+                class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition {{ request()->routeIs('sarpras.*') ? 'border-blue-500 text-blue-700 bg-blue-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }}">
+                Sarpras
+            </a>
+
+            <a href="{{ route('jurnal.index') }}"
+                class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition {{ request()->routeIs('jurnal.*') ? 'border-blue-500 text-blue-700 bg-blue-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }}">
+                Refleksi
+            </a>
+
+            <a href="{{ route('berita.index') }}"
+                class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition {{ request()->routeIs('berita.*') ? 'border-blue-500 text-blue-700 bg-blue-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }}">
+                Berita
+            </a>
+
+            <a href="{{ route('ijin.index') }}"
+                class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition {{ request()->routeIs('ijin.*') ? 'border-blue-500 text-blue-700 bg-blue-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }}">
+                Ijin
+            </a>
+
+            @if (Auth::user()->role == 'admin')
+                <a href="{{ route('users.index') }}"
+                    class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition {{ request()->routeIs('users.*') ? 'border-blue-500 text-blue-700 bg-blue-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }}">
+                    Kelola Akun
+                </a>
+            @endif
+        </div>
+
+        <div class="pt-4 pb-1 border-t border-gray-200 bg-gray-50">
+            <div class="px-4">
+                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
+                <div class="font-medium text-sm text-gray-500">{{ ucfirst(Auth::user()->role) }}</div>
+            </div>
+
+            <div class="mt-3 space-y-1">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();"
+                        class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                        {{ __('Log Out') }}
+                    </a>
+                </form>
+            </div>
         </div>
     </div>
 </nav>

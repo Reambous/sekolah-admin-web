@@ -119,44 +119,58 @@
                         </div>
                     @endif
 
-                    <div class="flex justify-between items-center pt-6 border-t border-gray-100">
+                    <div
+                        class="flex flex-col sm:flex-row justify-between items-center pt-6 border-t border-gray-100 gap-4">
+
+                        {{-- TOMBOL KEMBALI: Di HP lebarnya penuh --}}
                         <a href="{{ route('ijin.index') }}"
-                            class="text-gray-600 font-bold text-sm hover:text-gray-900">
+                            class="w-full sm:w-auto text-center text-gray-600 font-bold text-sm hover:text-gray-900 px-4 py-2 rounded-lg border border-gray-200 sm:border-transparent transition">
                             &larr; Kembali
                         </a>
 
-                        <div class="flex gap-3">
+                        {{-- GRUP TOMBOL AKSI --}}
+                        <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+
                             {{-- TOMBOL EDIT (Hanya Pemilik & Pending) --}}
                             @if ($ijin->user_id == Auth::id() && $ijin->status == 'pending')
                                 <a href="{{ route('ijin.edit', $ijin->id) }}"
-                                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded font-bold text-sm shadow transition">
+                                    class="w-full sm:w-auto text-center bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-lg font-bold text-sm shadow transition">
                                     Edit Pengajuan
                                 </a>
                             @endif
 
                             {{-- TOMBOL ADMIN (ACC / TOLAK) --}}
                             @if (Auth::user()->role == 'admin' && $ijin->status == 'pending')
-                                <form action="{{ route('ijin.approve', $ijin->id) }}" method="POST">
-                                    @csrf @method('PATCH')
-                                    <button
-                                        class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded font-bold text-sm shadow transition">Setujui
-                                        (ACC)</button>
-                                </form>
-                                <form action="{{ route('ijin.reject', $ijin->id) }}" method="POST"
-                                    onsubmit="return confirm('Tolak pengajuan ini?')">
-                                    @csrf @method('PATCH')
-                                    <button
-                                        class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded font-bold text-sm shadow transition">Tolak</button>
-                                </form>
+                                <div class="flex gap-2 w-full sm:w-auto">
+                                    <form action="{{ route('ijin.approve', $ijin->id) }}" method="POST"
+                                        class="flex-1 sm:flex-none">
+                                        @csrf @method('PATCH')
+                                        <button type="submit"
+                                            class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-bold text-sm shadow transition">
+                                            Setujui (ACC)
+                                        </button>
+                                    </form>
+
+                                    <form action="{{ route('ijin.reject', $ijin->id) }}" method="POST"
+                                        class="flex-1 sm:flex-none">
+                                        @csrf @method('PATCH')
+                                        <button type="submit"
+                                            class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-bold text-sm shadow transition">
+                                            Tolak
+                                        </button>
+                                    </form>
+                                </div>
                             @endif
 
                             {{-- TOMBOL HAPUS (Pending Only) --}}
                             @if ($ijin->status == 'pending' && (Auth::user()->role == 'admin' || $ijin->user_id == Auth::id()))
                                 <form action="{{ route('ijin.destroy', $ijin->id) }}" method="POST"
-                                    onsubmit="return confirm('Batalkan pengajuan ini?')">
+                                    class="w-full sm:w-auto" onsubmit="return confirm('Batalkan pengajuan ini?')">
                                     @csrf @method('DELETE')
-                                    <button
-                                        class="text-red-500 font-bold text-sm hover:underline px-3 py-2">Hapus</button>
+                                    <button type="submit"
+                                        class="w-full text-red-600 font-bold text-sm hover:bg-red-200 px-4 py-2 rounded-lg transition sm:px-3 bg-red-50">
+                                        Hapus
+                                    </button>
                                 </form>
                             @endif
                         </div>
