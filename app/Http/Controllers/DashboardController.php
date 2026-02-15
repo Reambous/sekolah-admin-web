@@ -30,7 +30,7 @@ class DashboardController extends Controller
             ->join('users', 'berita.user_id', '=', 'users.id') // Hubungkan user_id berita ke id users
             ->select('berita.*', 'users.name as penulis')      // Ambil nama user sebagai 'penulis'
             ->orderBy('berita.created_at', 'desc')
-            ->limit(3)
+            ->limit(4)
             ->get();
 
         // Ijin Terakhir Saya (Pribadi)

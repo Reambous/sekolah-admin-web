@@ -169,7 +169,7 @@
 
                     {{-- HEADER BERITA --}}
                     <div class="border-b-2 border-black mb-6 pb-2 flex justify-between items-end">
-                        <h3 class="text-xl font-black text-gray-900 uppercase tracking-tighter">Berita Utama</h3>
+                        <h3 class="text-xl font-black text-gray-900 uppercase tracking-tighter">Berita Terbaru</h3>
                         <a href="{{ route('berita.index') }}"
                             class="text-xs font-bold text-blue-800 hover:bg-blue-800 hover:text-white px-3 py-1 rounded transition uppercase tracking-wide mb-1">
                             Baca Semua Berita &rarr;
@@ -177,58 +177,100 @@
                     </div>
 
                     {{-- LIST BERITA (GRID 3 KOLOM AGAR RAPI KE SAMPING) --}}
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        @forelse($berita_terbaru->take(3) as $news)
-                            <article
-                                class="flex flex-col h-full border-b md:border-b-0 md:border-r border-gray-200 last:border-0 pr-0 md:pr-6 group">
+                    {{-- LAYOUT BERITA: 1 BESAR (KIRI), LIST KECIL (KANAN) --}}
+                    @if ($berita_terbaru->count() > 0)
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                                {{-- GAMBAR --}}
-                                @if ($news->gambar)
-                                    <div class="mb-4 overflow-hidden border border-gray-100 h-48">
-                                        <a href="{{ route('berita.show', $news->id) }}">
-                                            <img src="{{ asset('storage/' . $news->gambar) }}"
-                                                class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500 ease-in-out"
-                                                alt="Gambar Berita">
-                                        </a>
-                                    </div>
-                                @else
-                                    <div
-                                        class="mb-4 h-48 bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold uppercase">
-                                        Tanpa Gambar
-                                    </div>
-                                @endif
+                            {{-- KOLOM KIRI: BERITA UTAMA (BESAR) --}}
+                            {{-- Mengambil 2/3 lebar layar (lg:col-span-2) --}}
+                            @php $mainNews = $berita_terbaru->first(); @endphp
+                            <div class="lg:col-span-2 group">
+                                <a href="{{ route('berita.show', $mainNews->id) }}" class="block">
+                                    {{-- Gambar Besar --}}
+                                    <div class="w-full h-[400px] overflow-hidden border border-gray-200 mb-4 relative">
+                                        @if ($mainNews->gambar)
+                                            <img src="{{ asset('storage/' . $mainNews->gambar) }}"
+                                                class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700 ease-in-out">
+                                        @else
+                                            <div
+                                                class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 font-bold uppercase">
+                                                Tanpa Gambar
+                                            </div>
+                                        @endif
 
-                                {{-- KONTEN --}}
-                                <div class="flex-1 flex flex-col">
-                                    <div class="text-xs font-bold text-blue-600 uppercase mb-2">
-                                        {{ \Carbon\Carbon::parse($news->created_at)->format('d M Y') }}
+                                        {{-- Label Tanggal (Overlay) --}}
+                                        <div
+                                            class="absolute bottom-0 left-0 bg-blue-900 text-white px-4 py-2 text-xs font-bold uppercase tracking-widest">
+                                            {{ \Carbon\Carbon::parse($mainNews->created_at)->format('d M Y') }}
+                                        </div>
                                     </div>
 
+                                    {{-- Judul & Isi --}}
                                     <h2
-                                        class="text-lg font-bold text-gray-900 leading-tight mb-3 flex-1 truncate font-serif">
-                                        <a href="{{ route('berita.show', $news->id) }}"
-                                            class="hover:text-blue-800 transition">
-                                            {{ $news->judul }}
-                                        </a>
+                                        class="text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-3 font-serif group-hover:text-blue-800 transition truncate ">
+                                        {{ $mainNews->judul }}
                                     </h2>
-
-                                    <div class="text-gray-600 text-sm line-clamp-3 mb-3 truncate"
-                                        title="{{ strip_tags($news->isi) }}">
-                                        {{ Str::limit(strip_tags($news->isi), 100) }}
-                                    </div>
-
-                                    <a href="{{ route('berita.show', $news->id) }}"
-                                        class="text-xs font-bold font-sans text-gray-900 uppercase border-b border-gray-900 w-max hover:text-blue-700 hover:border-blue-700 pb-0.5">
+                                    <p class="text-gray-600 text-sm leading-relaxed mb-4 truncate">
+                                        {{ Str::limit(strip_tags($mainNews->isi), 250) }}
+                                    </p>
+                                    <span
+                                        class="text-xs font-bold text-blue-700 uppercase border-b-2 border-blue-700 pb-0.5 group-hover:text-black group-hover:border-black transition">
                                         Baca Selengkapnya
-                                    </a>
-                                </div>
-                            </article>
-                        @empty
-                            <div class="col-span-3 py-10 text-center text-gray-400 italic">
-                                Belum ada konten berita untuk ditampilkan.
+                                    </span>
+                                </a>
                             </div>
-                        @endforelse
-                    </div>
+
+                            {{-- KOLOM KANAN: BERITA SAMPING (LIST VERTIKAL) --}}
+                            {{-- Mengambil 1/3 lebar layar (lg:col-span-1) --}}
+                            <div class="lg:col-span-1 flex flex-col gap-6">
+                                @forelse($berita_terbaru->skip(1)->take(3) as $news)
+                                    <article
+                                        class="flex gap-4 group border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+                                        {{-- Thumbnail Kecil (Kotak Kanan di Referensi Anda) --}}
+                                        <div class="w-36 h-36 shrink-0 overflow-hidden border border-gray-200 relative">
+                                            <a href="{{ route('berita.show', $news->id) }}">
+                                                @if ($news->gambar)
+                                                    <img src="{{ asset('storage/' . $news->gambar) }}"
+                                                        class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500">
+                                                @else
+                                                    <div
+                                                        class="w-full h-full bg-gray-100 flex items-center justify-center text-[10px] text-gray-400 font-bold">
+                                                        NO IMG
+                                                    </div>
+                                                @endif
+                                            </a>
+                                        </div>
+
+                                        {{-- Teks --}}
+                                        <div class="flex flex-col justify-center">
+                                            <div class="text-[10px] font-bold text-blue-600 uppercase mb-1">
+                                                {{ \Carbon\Carbon::parse($news->created_at)->format('d M') }}
+                                            </div>
+                                            <h4
+                                                class="text-sm font-bold text-gray-900 leading-snug font-serif group-hover:text-blue-700 transition line-clamp-3 truncate w-[200px]">
+                                                <a href="{{ route('berita.show', $news->id) }}">
+                                                    {{ $news->judul }}
+                                                </a>
+                                            </h4>
+                                            <p class="text-gray-600 text-xs mt-1 line-clamp-4 truncate w-[200px]">
+                                                {{ Str::limit(strip_tags($news->isi), 100) }}
+                                            </p>
+                                        </div>
+                                    </article>
+                                @empty
+                                    <div
+                                        class="h-full flex items-center justify-center text-gray-400 text-xs italic bg-gray-50 border border-dashed border-gray-200">
+                                        Tidak ada berita tambahan.
+                                    </div>
+                                @endforelse
+                            </div>
+
+                        </div>
+                    @else
+                        <div class="py-20 text-center text-gray-400 italic">
+                            Belum ada konten berita untuk ditampilkan.
+                        </div>
+                    @endif
                 </div>
 
             </div>
