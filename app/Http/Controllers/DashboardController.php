@@ -49,7 +49,24 @@ class DashboardController extends Controller
             ->limit(3)
             ->get();
 
-        return view('dashboard', compact('stats', 'berita_terbaru', 'ijin_terakhir', 'jurnal_terakhir'));
+        // 5. REFLEKSI TERBARU (GLOBAL / SEMUA ORANG)
+        // Tidak ada filter user_id, jadi semua bisa lihat punya semua orang
+        $refleksi_terbaru = DB::table('jurnal_refleksi')
+            ->join('users', 'jurnal_refleksi.user_id', '=', 'users.id') // Gabungkan dengan tabel user
+            ->select('jurnal_refleksi.*', 'users.name as nama_guru')     // Ambil nama gurunya
+            ->orderBy('jurnal_refleksi.created_at', 'desc')
+            ->limit(3)
+            ->get();
+
+        $juara_terbaru = DB::table('kesiswaan_lomba')
+            ->select('jenis_lomba', 'prestasi as peringkat') // Alias 'juara' jadi 'peringkat'
+            ->whereNotNull('prestasi') // Hanya ambil yang sudah ada prestasinya
+            ->where('prestasi', '!=', '') // Jaga-jaga jika string kosong
+            ->orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get();
+
+        return view('dashboard', compact('stats', 'berita_terbaru', 'ijin_terakhir',  'jurnal_terakhir', 'refleksi_terbaru', 'juara_terbaru'));
     }
 
     public function downloadSemua()

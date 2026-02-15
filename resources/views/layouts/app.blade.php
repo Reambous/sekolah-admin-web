@@ -21,14 +21,15 @@
         {{-- Navigasi Atas --}}
         @include('layouts.navigation')
 
-        {{-- Header Halaman (Jika ada) --}}
+        {{-- Header Halaman (Jika ada)
         @if (isset($header))
             <header class="bg-white shadow">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     {{ $header }}
                 </div>
             </header>
-        @endif
+        @endif --}}
+        <h3 class="text-center text-xl font-bold text-gray-800 py-4">SELAMAT DATANG DI PORTAL SEKOLAH</h3>
 
         {{-- Konten Utama --}}
         <main>
