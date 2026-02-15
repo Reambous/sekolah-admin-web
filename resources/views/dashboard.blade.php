@@ -145,12 +145,12 @@
                                         {{ str_pad($key + 1, 2, '0', STR_PAD_LEFT) }}
                                     </span>
                                     <div class="overflow-hidden">
-                                        <p class="text-sm font-bold text-gray-800 leading-tight group-hover:text-blue-700 transition truncate"
+                                        <p class="text-sm  text-gray-800 leading-tight group-hover:text-blue-700 transition truncate font-serif "
                                             title="{{ $refleksi->judul_refleksi }}">
                                             {{ $refleksi->judul_refleksi }}
                                         </p>
                                         <div
-                                            class="flex items-center gap-1 mt-1 text-[10px] text-gray-400 uppercase font-bold">
+                                            class="flex items-center gap-1 mt-1 text-[10px] text-gray-400 uppercase font-bold font-sans">
                                             <span class="text-blue-600">{{ $refleksi->user->name ?? 'Guru' }}</span>
                                             <span>•</span>
                                             <span>{{ \Carbon\Carbon::parse($refleksi->tanggal)->format('d M') }}</span>
@@ -204,7 +204,8 @@
                                         {{ \Carbon\Carbon::parse($news->created_at)->format('d M Y') }}
                                     </div>
 
-                                    <h2 class="text-lg font-bold text-gray-900 leading-tight mb-3 flex-1 truncate">
+                                    <h2
+                                        class="text-lg font-bold text-gray-900 leading-tight mb-3 flex-1 truncate font-serif">
                                         <a href="{{ route('berita.show', $news->id) }}"
                                             class="hover:text-blue-800 transition">
                                             {{ $news->judul }}
@@ -217,7 +218,7 @@
                                     </div>
 
                                     <a href="{{ route('berita.show', $news->id) }}"
-                                        class="text-xs font-bold text-gray-900 uppercase border-b border-gray-900 w-max hover:text-blue-700 hover:border-blue-700 pb-0.5">
+                                        class="text-xs font-bold font-sans text-gray-900 uppercase border-b border-gray-900 w-max hover:text-blue-700 hover:border-blue-700 pb-0.5">
                                         Baca Selengkapnya
                                     </a>
                                 </div>
