@@ -117,7 +117,7 @@
 
                     {{-- KOLOM 2: KUTIPAN (TENGAH) --}}
                     <div
-                        class="bg-blue-50 border-l-4 border-blue-800 p-6 h-full flex flex-col justify-center items-center text-center shadow-sm">
+                        class="bg-blue-50 border-l-4 border-blue-800 shadow-sm p-6 h-full flex flex-col justify-center items-center text-center ">
                         <p class="text-sm text-gray-700 leading-relaxed font-medium italic">
                             "Setiap hari adalah kesempatan baru untuk membentuk masa depan. Ingatlah bahwa di tangan
                             Bapak/Ibu Guru, terdapat harapan dan mimpi ratusan siswa. Mari kita terus bersinergi
