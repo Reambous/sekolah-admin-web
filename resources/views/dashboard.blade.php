@@ -39,14 +39,14 @@
                 </template>
 
                 {{-- OVERLAY TEXT (TEKS SAMBUTAN TETAP DI DEPAN) --}}
-                <div class="relative z-10 h-full flex flex-col justify-center px-8 md:px-16">
+                <div class="relative z-10 h-full flex flex-col justify-center px-8 md:px-16 ">
                     <div class="animate-fade-in-up">
                         <span
                             class="bg-blue-800 text-white text-xs font-bold px-3 py-1 uppercase tracking-widest inline-block mb-3 shadow-md">
                             Portal Resmi Sekolah
                         </span>
                         <h1
-                            class="text-4xl md:text-6xl font-black text-white leading-tight mb-4 drop-shadow-lg uppercase tracking-tight">
+                            class="text-4xl md:text-6xl font-black text-white leading-tight mb-4 drop-shadow-lg uppercase tracking-tight ">
                             Selamat Datang, <br>
                             <span class="text-yellow-400">{{ Auth::user()->name }}</span>
                         </h1>
@@ -105,7 +105,7 @@
                                         title="{{ $juara->jenis_lomba }}">
                                         {{ $juara->jenis_lomba }}
                                     </p>
-                                    <p class="text-sm font-black italic text-white uppercase">
+                                    <p class="text-sm font-black italic text-white uppercase truncate">
                                         {{ $juara->peringkat }}
                                     </p>
                                 </li>
@@ -187,7 +187,8 @@
                             <div class="lg:col-span-2 group">
                                 <a href="{{ route('berita.show', $mainNews->id) }}" class="block">
                                     {{-- Gambar Besar --}}
-                                    <div class="w-full h-[400px] overflow-hidden border border-gray-200 mb-4 relative">
+                                    <div
+                                        class="w-full h-[400px] overflow-hidden  border-blue-900 border-4 mb-4 relative ">
                                         @if ($mainNews->gambar)
                                             <img src="{{ asset('storage/' . $mainNews->gambar) }}"
                                                 class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700 ease-in-out">
@@ -222,12 +223,12 @@
 
                             {{-- KOLOM KANAN: BERITA SAMPING (LIST VERTIKAL) --}}
                             {{-- Mengambil 1/3 lebar layar (lg:col-span-1) --}}
-                            <div class="lg:col-span-1 flex flex-col gap-6">
+                            <div class="lg:col-span-1 flex flex-col gap-6 bg-blue-50 p-4 border-l-4 border-blue-800">
                                 @forelse($berita_terbaru->skip(1)->take(3) as $news)
                                     <article
-                                        class="flex gap-4 group border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+                                        class="flex gap-4 group border-b border-gray-400 pb-4 last:border-0 last:pb-0">
                                         {{-- Thumbnail Kecil (Kotak Kanan di Referensi Anda) --}}
-                                        <div class="w-36 h-36 shrink-0 overflow-hidden border border-gray-200 relative">
+                                        <div class="w-36 h-36 shrink-0 overflow-hidden border border-blue-900 relative">
                                             <a href="{{ route('berita.show', $news->id) }}">
                                                 @if ($news->gambar)
                                                     <img src="{{ asset('storage/' . $news->gambar) }}"

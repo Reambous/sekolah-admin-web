@@ -204,14 +204,14 @@
 
                                 {{-- Guru --}}
                                 <td class="px-6 py-4 align-top">
-                                    <div class="text-sm font-bold text-blue-700 uppercase">
+                                    <div class="text-sm font-bold text-blue-700 uppercase truncate max-w-xs">
                                         {{ $item->nama_guru }}
                                     </div>
                                 </td>
 
                                 {{-- Nama Kegiatan --}}
                                 <td class="px-6 py-4 align-top">
-                                    <div class="text-sm font-bold text-gray-900 leading-snug">
+                                    <div class="text-sm font-bold text-gray-900 leading-snug truncate max-w-xs">
                                         {{ $item->nama_kegiatan }}
                                     </div>
                                 </td>

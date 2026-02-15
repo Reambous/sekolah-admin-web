@@ -25,7 +25,11 @@
                         {{ request()->routeIs('dashboard') ? 'border-black text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
                         Beranda
                     </a>
-
+                    <a href="{{ route('berita.index') }}"
+                        class="inline-flex items-center px-3 pt-1 border-b-2 text-xs font-bold uppercase tracking-wide transition duration-150 ease-in-out h-full
+                        {{ request()->routeIs('berita.*') ? 'border-black text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                        Berita
+                    </a>
                     {{-- DROPDOWN KESISWAAN (FIX POSISI) --}}
                     {{-- Wrapper ini harus h-full dan relative agar dropdown patokannya benar --}}
                     <div class="relative h-full" x-data="{ open: false }" @click.away="open = false">
@@ -95,11 +99,7 @@
                         Refleksi
                     </a>
 
-                    <a href="{{ route('berita.index') }}"
-                        class="inline-flex items-center px-3 pt-1 border-b-2 text-xs font-bold uppercase tracking-wide transition duration-150 ease-in-out h-full
-                        {{ request()->routeIs('berita.*') ? 'border-black text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
-                        Berita
-                    </a>
+
 
                     @if (Auth::user()->role == 'admin')
                         <a href="{{ route('users.index') }}"
@@ -113,12 +113,13 @@
             </div>
 
             {{-- BAGIAN KANAN (PROFILE) --}}
-            <div class="hidden sm:flex sm:items-center sm:ml-6">
+            <div class="hidden sm:flex sm:items-center sm:ml-6 ">
                 <div class="relative" x-data="{ open: false }" @click.away="open = false">
                     <button @click="open = ! open"
                         class="inline-flex items-center gap-3 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-600 bg-white hover:text-gray-900 focus:outline-none transition ease-in-out duration-150">
                         <div class="flex flex-col text-right">
-                            <span class="font-bold uppercase text-xs tracking-wide">{{ Auth::user()->name }}</span>
+                            <span
+                                class="font-bold uppercase text-xs tracking-wide truncate max-w-xs">{{ Auth::user()->name }}</span>
                             <span class="text-[10px] text-gray-400">{{ ucfirst(Auth::user()->role) }}</span>
                         </div>
                         <div

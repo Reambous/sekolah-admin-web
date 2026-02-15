@@ -1,8 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Prestasi & Lomba') }}
-        </h2>
+        {{-- Header dikosongkan agar menyatu dengan body --}}
     </x-slot>
 
     {{-- CSS ANTI-GAGAL --}}
@@ -26,211 +24,265 @@
         }
     </style>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
-                <div class="p-6 text-gray-900">
+    <div class="py-8 bg-white min-h-screen font-sans text-gray-900">
+        <div class="max-w-[95%] mx-auto">
 
-                    {{-- NOTIFIKASI --}}
-                    @if (session('success'))
-                        <div class="mb-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4">
-                            {{ session('success') }}
+            {{-- JUDUL HALAMAN (GAYA PORTAL) --}}
+            <div
+                class="border-b-4 border-gray-900 mb-8 pb-4 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                <div>
+                    <h2 class="text-3xl font-black text-gray-900 uppercase tracking-tighter mb-1">
+                        Daftar Prestasi & Lomba
+                    </h2>
+                    <p class="text-gray-500 text-sm font-medium uppercase tracking-wide">
+                        Rekapitulasi kejuaraan dan partisipasi lomba siswa
+                    </p>
+                </div>
+
+                {{-- TOMBOL AKSI UTAMA --}}
+                <div class="flex flex-wrap items-center gap-2">
+                    @if (Auth::user()->role == 'admin')
+                        {{-- Hapus Massal --}}
+                        <div class="flex items-center gap-2 border-r border-gray-300 pr-3 mr-1">
+                            <input type="checkbox" id="select-all"
+                                class="w-5 h-5 border-2 border-gray-400 text-gray-900 focus:ring-gray-900">
+                            <button type="button" id="btn-hapus-massal"
+                                class="bg-red-600 text-white px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-red-700 transition shadow-sm">
+                                Hapus Terpilih
+                            </button>
                         </div>
+
+                        {{-- Export Excel --}}
+                        <a href="{{ route('kesiswaan.lomba.export') }}"
+                            class="bg-green-700 text-white px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-green-800 transition shadow-sm flex items-center gap-2">
+                            <span>📥</span> Export Excel
+                        </a>
                     @endif
 
-                    {{-- HEADER: JUDUL & TOMBOL --}}
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                        <div class="flex flex-wrap items-center gap-3">
-                            <h3 class="text-xl font-bold text-gray-900 whitespace-nowrap">Daftar Lomba </h3>
-
-                            @if (Auth::user()->role == 'admin')
-                                <div class="flex items-center gap-2 border-l pl-3 border-gray-300">
-                                    <input type="checkbox" id="select-all"
-                                        class="rounded border-gray-300 text-black focus:ring-black cursor-pointer w-5 h-5">
-                                    <button type="button" id="btn-hapus-massal"
-                                        class="bg-red-100 text-red-700 px-3 py-1.5 rounded text-xs font-bold hover:bg-red-200 border border-red-200 transition">
-                                        Hapus Terpilih
-                                    </button>
-                                </div>
-                                <a href="{{ route('kesiswaan.lomba.export') }}"
-                                    class="px-3 py-1.5 bg-green-600 text-white rounded font-bold text-xs hover:bg-green-700 transition flex items-center gap-1 whitespace-nowrap">
-                                    📥 Export Excel
-                                </a>
-                            @endif
-                            <a href="{{ route('kesiswaan.lomba.create') }}"
-                                class="px-3 py-1.5 bg-black text-white text-xs font-bold rounded hover:bg-gray-800 transition shadow-sm whitespace-nowrap">
-                                + Input Lomba
-                            </a>
-                        </div>
-                    </div>
-
-
-                    {{-- 1. TAMPILAN MOBILE (HP) - KARTU --}}
-                    <div id="tampilan-hp" class="space-y-4">
-                        @forelse($lombas as $item)
-                            <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4 relative">
-                                <div class="flex justify-between items-start mb-2">
-                                    <div>
-                                        <div class="text-xs font-bold text-gray-500 uppercase">
-                                            {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}</div>
-                                        <div class="text-[10px] text-gray-400">🕒
-                                            {{ \Carbon\Carbon::parse($item->created_at)->format('H:i') }} WIB</div>
-                                    </div>
-                                    <span
-                                        class="px-2 py-1 text-[10px] font-bold rounded {{ $item->status == 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
-                                        {{ ucfirst($item->status) }}
-                                    </span>
-                                </div>
-
-                                <div class="mb-4">
-                                    <div class="text-[10px] font-bold text-blue-600 mb-1 uppercase">Pelapor:
-                                        {{ $item->nama_guru }}</div>
-                                    <h4 class="text-gray-900 font-bold text-base leading-tight truncate">
-                                        {{ $item->jenis_lomba }}</h4>
-                                    <p class="text-gray-600 text-sm mt-1 font-medium italic">Hasil:
-                                        {{ $item->prestasi }}</p>
-                                </div>
-
-                                {{-- Checkbox Admin (Pojok Kanan Bawah) --}}
-                                @if (Auth::user()->role == 'admin')
-                                    <div class="absolute bottom-3 right-3 z-10">
-                                        <input type="checkbox" name="ids[]" value="{{ $item->id }}"
-                                            class="item-checkbox w-6 h-6 rounded border-gray-300 text-red-600 focus:ring-red-500 bg-gray-50">
-                                    </div>
-                                @endif
-
-                                {{-- Tombol Aksi Mobile --}}
-                                <div class="flex flex-wrap gap-2 pr-12 mt-4">
-                                    <a href="{{ route('kesiswaan.lomba.show', $item->id) }}"
-                                        class="text-xs bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1.5 rounded font-bold">Detail</a>
-
-                                    @if (Auth::user()->role == 'admin' && $item->status == 'pending')
-                                        <form action="{{ route('kesiswaan.lomba.approve', $item->id) }}"
-                                            method="POST">
-                                            @csrf @method('PATCH')
-                                            <button type="submit"
-                                                class="text-xs bg-green-600 text-white px-3 py-1.5 rounded font-bold shadow-sm">✓
-                                                ACC</button>
-                                        </form>
-                                    @endif
-
-                                    @if (Auth::user()->role == 'admin' && $item->status == 'disetujui')
-                                        <form action="{{ route('kesiswaan.lomba.unapprove', $item->id) }}"
-                                            method="POST" onsubmit="return confirm('Batalkan validasi?')">
-                                            @csrf @method('PATCH')
-                                            <button type="submit"
-                                                class="text-xs bg-red-100 text-red-700 border border-red-200 px-3 py-1.5 rounded font-bold">X
-                                                Batal</button>
-                                        </form>
-                                    @endif
-                                </div>
-                            </div>
-                        @empty
-                            <div
-                                class="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-300 text-gray-500 italic text-sm">
-                                Belum ada data lomba.</div>
-                        @endforelse
-                    </div>
-
-                    {{-- 2. TAMPILAN LAPTOP (DESKTOP) - TABEL --}}
-                    <div id="tampilan-laptop" class="overflow-x-auto border rounded-lg">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    @if (Auth::user()->role == 'admin')
-                                        <th class="px-4 py-3 text-left w-10"><input type="checkbox" id="select-all"
-                                                class="rounded border-gray-300 text-black focus:ring-black"></th>
-                                    @endif
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                        Tanggal</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                        Nama Lomba</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                        Juara / Hasil</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                        Pelapor</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                        Status</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                        Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse($lombas as $item)
-                                    <tr class="hover:bg-gray-50 transition">
-                                        @if (Auth::user()->role == 'admin')
-                                            <td class="px-4 py-3 align-middle">
-                                                <input type="checkbox" name="ids[]" value="{{ $item->id }}"
-                                                    class="item-checkbox rounded border-gray-300 text-black focus:ring-black">
-                                            </td>
-                                        @endif
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            <div class="font-bold">
-                                                {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}
-                                            </div>
-                                            <div class="text-xs text-gray-500 mt-1">🕒
-                                                {{ \Carbon\Carbon::parse($item->created_at)->format('H:i') }} WIB</div>
-                                        </td>
-                                        <td class="px-6 py-4 align-middle">
-                                            <div class="w-64 truncate font-bold text-gray-900"
-                                                title="{{ $item->jenis_lomba }}">{{ $item->jenis_lomba }}</div>
-                                        </td>
-                                        <td class="px-6 py-4 align-middle">
-                                            <div class="w-48 truncate text-sm text-gray-600"
-                                                title="{{ $item->prestasi }}">{{ $item->prestasi }}</div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
-                                            {{ $item->nama_guru }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $item->status == 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
-                                                {{ ucfirst($item->status) }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <div class="flex items-center gap-2">
-                                                <a href="{{ route('kesiswaan.lomba.show', $item->id) }}"
-                                                    class="text-blue-600 hover:text-blue-900 font-bold bg-blue-50 px-3 py-1 rounded-md border border-blue-200 transition hover:bg-blue-100">Detail</a>
-                                                @if (Auth::user()->role == 'admin' && $item->status == 'pending')
-                                                    <form action="{{ route('kesiswaan.lomba.approve', $item->id) }}"
-                                                        method="POST">
-                                                        @csrf @method('PATCH')
-                                                        <button type="submit"
-                                                            class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded shadow transition">✓
-                                                            ACC</button>
-                                                    </form>
-                                                @endif
-                                                @if (Auth::user()->role == 'admin' && $item->status == 'disetujui')
-                                                    <form action="{{ route('kesiswaan.lomba.unapprove', $item->id) }}"
-                                                        method="POST" onsubmit="return confirm('Batalkan?')">@csrf
-                                                        @method('PATCH')
-                                                        <button type="submit"
-                                                            class="bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded shadow">X
-                                                            Batal</button>
-                                                    </form>
-                                                @endif
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500 italic">
-                                            Belum ada data lomba.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-
+                    {{-- Input Baru --}}
+                    <a href="{{ route('kesiswaan.lomba.create') }}"
+                        class="bg-gray-900 text-white px-5 py-2 text-xs font-bold uppercase tracking-wider hover:bg-yellow-500 hover:text-black transition shadow-lg transform hover:-translate-y-0.5">
+                        + Input Lomba
+                    </a>
                 </div>
             </div>
+
+            {{-- NOTIFIKASI --}}
+            @if (session('success'))
+                <div
+                    class="mb-6 bg-green-50 border-l-4 border-green-600 p-4 text-green-800 text-sm font-bold flex items-center gap-2 shadow-sm">
+                    <span>✅</span> {{ session('success') }}
+                </div>
+            @endif
+
+            {{-- 1. TAMPILAN MOBILE (HP) --}}
+            <div id="tampilan-hp" class="space-y-4">
+                @forelse($lombas as $item)
+                    <div
+                        class="bg-white border-2 border-gray-100 p-5 shadow-sm relative group hover:border-blue-200 transition">
+
+                        {{-- Header Kartu --}}
+                        <div class="flex justify-between items-start mb-3 border-b border-gray-100 pb-2">
+                            <div>
+                                <div class="text-xs font-black text-blue-700 uppercase tracking-wide">
+                                    {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}
+                                </div>
+                                <div class="text-[10px] text-gray-400 font-bold uppercase">
+                                    Input: {{ \Carbon\Carbon::parse($item->created_at)->format('H:i') }} WIB
+                                </div>
+                            </div>
+
+                            {{-- Status Badge (Kotak) --}}
+                            <span
+                                class="px-2 py-1 text-[10px] font-bold uppercase tracking-wide border 
+                                {{ $item->status == 'pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 'bg-green-50 text-green-700 border-green-200' }}">
+                                {{ ucfirst($item->status) }}
+                            </span>
+                        </div>
+
+                        {{-- Isi Kartu --}}
+                        <div class="mb-4">
+                            <h4 class="text-lg font-black text-gray-900 leading-tight mb-1">
+                                {{ $item->jenis_lomba }}
+                            </h4>
+                            <div class="text-xs font-bold text-gray-500 uppercase mb-3">
+                                Pelapor: <span class="text-black">{{ $item->nama_guru }}</span>
+                            </div>
+
+                            {{-- Hasil Prestasi (Highlight) --}}
+                            <div class="bg-gray-50 p-3 border-l-4 border-yellow-400">
+                                <div class="text-[10px] font-bold text-gray-400 uppercase mb-1">Hasil / Juara</div>
+                                <div class="text-sm font-bold text-gray-900 italic">
+                                    "{{ $item->prestasi }}"
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Checkbox Admin --}}
+                        @if (Auth::user()->role == 'admin')
+                            <div class="absolute bottom-4 right-4 z-10">
+                                <input type="checkbox" name="ids[]" value="{{ $item->id }}"
+                                    class="item-checkbox w-6 h-6 border-2 border-gray-300 text-red-600 focus:ring-red-500 rounded-none">
+                            </div>
+                        @endif
+
+                        {{-- Action Buttons --}}
+                        <div class="flex flex-wrap gap-2 mt-4 pt-3 border-t border-gray-100">
+                            <a href="{{ route('kesiswaan.lomba.show', $item->id) }}"
+                                class="text-xs bg-gray-900 text-white px-3 py-1.5 font-bold uppercase tracking-wider hover:bg-blue-700">
+                                Detail
+                            </a>
+
+                            @if (Auth::user()->role == 'admin')
+                                @if ($item->status == 'pending')
+                                    <form action="{{ route('kesiswaan.lomba.approve', $item->id) }}" method="POST">
+                                        @csrf @method('PATCH')
+                                        <button type="submit"
+                                            class="text-xs bg-green-600 text-white px-3 py-1.5 font-bold uppercase tracking-wider hover:bg-green-700 shadow-sm">
+                                            ✓ ACC
+                                        </button>
+                                    </form>
+                                @elseif ($item->status == 'disetujui')
+                                    <form action="{{ route('kesiswaan.lomba.unapprove', $item->id) }}" method="POST"
+                                        onsubmit="return confirm('Batalkan validasi?')">
+                                        @csrf @method('PATCH')
+                                        <button type="submit"
+                                            class="text-xs bg-red-600 text-white px-3 py-1.5 font-bold uppercase tracking-wider hover:bg-red-700 shadow-sm">
+                                            ✕ Batal
+                                        </button>
+                                    </form>
+                                @endif
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                    <div
+                        class="text-center py-10 bg-gray-50 border-2 border-dashed border-gray-200 text-gray-400 italic">
+                        Belum ada data lomba.
+                    </div>
+                @endforelse
+            </div>
+
+            {{-- 2. TAMPILAN LAPTOP (DESKTOP) --}}
+            <div id="tampilan-laptop" class="overflow-hidden border border-gray-200 shadow-sm">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-900 text-white">
+                        <tr>
+                            @if (Auth::user()->role == 'admin')
+                                <th class="px-4 py-4 text-center w-12">
+                                    <span class="text-[10px] font-black text-white uppercase tracking-widest">
+                                        PILIH
+                                    </span>
+                                </th>
+                            @endif
+                            <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-widest w-32">Tanggal
+                            </th>
+                            <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-widest">Nama Lomba</th>
+                            <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-widest w-48">Juara /
+                                Hasil</th>
+                            <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-widest w-40">Pelapor
+                            </th>
+                            <th class="px-6 py-4 text-center text-xs font-black uppercase tracking-widest w-32">Status
+                            </th>
+                            <th class="px-6 py-4 text-center text-xs font-black uppercase tracking-widest w-40">Aksi
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($lombas as $item)
+                            <tr class="hover:bg-blue-50 transition duration-150 group">
+                                @if (Auth::user()->role == 'admin')
+                                    <td class="px-4 py-4 text-center align-middle bg-gray-50 group-hover:bg-blue-50">
+                                        <input type="checkbox" name="ids[]" value="{{ $item->id }}"
+                                            class="item-checkbox w-5 h-5 border-2 border-gray-300 text-black focus:ring-black rounded-none">
+                                    </td>
+                                @endif
+
+                                {{-- Tanggal --}}
+                                <td class="px-6 py-4 whitespace-nowrap align-top">
+                                    <div class="text-sm font-bold text-gray-900">
+                                        {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}
+                                    </div>
+                                    <div class="text-xs text-gray-400 font-bold mt-1">
+                                        {{ \Carbon\Carbon::parse($item->created_at)->format('H:i') }} WIB
+                                    </div>
+                                </td>
+
+                                {{-- Nama Lomba --}}
+                                <td class="px-6 py-4 align-top">
+                                    <div class="text-sm font-bold text-gray-900 leading-snug truncate max-w-[400px]">
+                                        {{ $item->jenis_lomba }}
+                                    </div>
+                                </td>
+
+                                {{-- Hasil --}}
+                                <td class="px-6 py-4 align-top">
+                                    <div
+                                        class="text-sm font-bold text-gray-600 bg-gray-100 px-2 py-1 inline-block border border-gray-200 truncate max-w-[200px]">
+                                        {{ $item->prestasi }}
+                                    </div>
+                                </td>
+
+                                {{-- Pelapor --}}
+                                <td class="px-6 py-4 align-top">
+                                    <div class="text-sm font-bold text-blue-700 uppercase truncate max-w-[150px]">
+                                        {{ $item->nama_guru }}
+                                    </div>
+                                </td>
+
+                                {{-- Status --}}
+                                <td class="px-6 py-4 align-top text-center">
+                                    <span
+                                        class="px-3 py-1 inline-flex text-[10px] leading-5 font-black uppercase tracking-wide border 
+                                        {{ $item->status == 'pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-300' : 'bg-green-50 text-green-700 border-green-300' }}">
+                                        {{ ucfirst($item->status) }}
+                                    </span>
+                                </td>
+
+                                {{-- Aksi --}}
+                                <td class="px-6 py-4 align-top text-center">
+                                    <div class="flex flex-col gap-2 items-center">
+                                        <a href="{{ route('kesiswaan.lomba.show', $item->id) }}"
+                                            class="text-xs font-bold text-blue-600 hover:text-black border-b border-blue-600 hover:border-black transition uppercase tracking-wide">
+                                            Lihat Detail
+                                        </a>
+
+                                        @if (Auth::user()->role == 'admin')
+                                            @if ($item->status == 'pending')
+                                                <form action="{{ route('kesiswaan.lomba.approve', $item->id) }}"
+                                                    method="POST" class="w-full">
+                                                    @csrf @method('PATCH')
+                                                    <button type="submit"
+                                                        class="w-full bg-green-600 text-white text-[10px] font-bold px-2 py-1 uppercase hover:bg-green-700 transition shadow-sm">
+                                                        ✓ ACC
+                                                    </button>
+                                                </form>
+                                            @elseif ($item->status == 'disetujui')
+                                                <form action="{{ route('kesiswaan.lomba.unapprove', $item->id) }}"
+                                                    method="POST" onsubmit="return confirm('Batalkan validasi?')"
+                                                    class="w-full">
+                                                    @csrf @method('PATCH')
+                                                    <button type="submit"
+                                                        class="w-full bg-red-600 text-white text-[10px] font-bold px-2 py-1 uppercase hover:bg-red-700 transition shadow-sm">
+                                                        ✕ Batal
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="px-6 py-10 text-center text-gray-400 italic bg-gray-50">
+                                    Belum ada data lomba.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     </div>
 

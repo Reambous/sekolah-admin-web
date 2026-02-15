@@ -1,13 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Jurnal Refleksi & Catatan Harian') }}
-        </h2>
+        {{-- Header dikosongkan agar menyatu dengan body --}}
     </x-slot>
 
     {{-- CSS ANTI-GAGAL --}}
     <style>
-        /* Default: Tampilkan HP, Sembunyikan Laptop */
         #tampilan-hp {
             display: block;
         }
@@ -16,7 +13,6 @@
             display: none;
         }
 
-        /* Jika Layar LEBIH BESAR dari 768px (Laptop/Tablet), Tukar Posisi */
         @media (min-width: 768px) {
             #tampilan-hp {
                 display: none !important;
@@ -28,183 +24,212 @@
         }
     </style>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
-                <div class="p-6 text-gray-900">
+    <div class="py-8 bg-white min-h-screen font-sans text-gray-900">
+        <div class="max-w-[95%] mx-auto">
 
-                    {{-- NOTIFIKASI --}}
-                    @if (session('success'))
-                        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
-                            {{ session('success') }}
+            {{-- JUDUL HALAMAN (GAYA PORTAL) --}}
+            <div
+                class="border-b-4 border-gray-900 mb-8 pb-4 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                <div>
+                    <h2 class="text-3xl font-black text-gray-900 uppercase tracking-tighter mb-1">
+                        Jurnal Refleksi
+                    </h2>
+                    <p class="text-gray-500 text-sm font-medium uppercase tracking-wide">
+                        Catatan harian dan evaluasi pembelajaran guru
+                    </p>
+                </div>
+
+                {{-- TOMBOL AKSI UTAMA --}}
+                <div class="flex flex-wrap items-center gap-2">
+                    @if (Auth::user()->role == 'admin')
+                        {{-- Hapus Massal --}}
+                        <div class="flex items-center gap-2 border-r border-gray-300 pr-3 mr-1">
+                            <input type="checkbox" id="select-all"
+                                class="w-5 h-5 border-2 border-gray-400 text-gray-900 focus:ring-gray-900">
+                            <button type="button" id="btn-hapus-massal"
+                                class="bg-red-600 text-white px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-red-700 transition shadow-sm">
+                                Hapus Terpilih
+                            </button>
                         </div>
-                    @endif
-                    @if (session('error'))
-                        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-                            <strong>Peringatan!</strong> {{ session('error') }}
-                        </div>
+
+                        {{-- Export Excel --}}
+                        <a href="{{ route('jurnal.export') }}"
+                            class="bg-green-700 text-white px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-green-800 transition shadow-sm flex items-center gap-2">
+                            <span>📥</span> Export Excel
+                        </a>
                     @endif
 
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                        <div class="flex flex-wrap items-center gap-3">
-                            <h3 class="text-xl font-bold text-gray-900 whitespace-nowrap">Refleksi </h3>
+                    {{-- Input Baru --}}
+                    <a href="{{ route('jurnal.create') }}"
+                        class="bg-gray-900 text-white px-5 py-2 text-xs font-bold uppercase tracking-wider hover:bg-yellow-500 hover:text-black transition shadow-lg transform hover:-translate-y-0.5">
+                        + Tulis Refleksi
+                    </a>
+                </div>
+            </div>
 
-                            @if (Auth::user()->role == 'admin')
-                                <div class="flex items-center gap-2 border-l pl-3 border-gray-300">
-                                    <input type="checkbox" id="select-all"
-                                        class="rounded border-gray-300 text-black focus:ring-black cursor-pointer w-5 h-5">
-                                    <button type="button" id="btn-hapus-massal"
-                                        class="bg-red-100 text-red-700 px-3 py-1.5 rounded text-xs font-bold hover:bg-red-200 border border-red-200 transition">
-                                        Hapus Terpilih
-                                    </button>
+            {{-- NOTIFIKASI --}}
+            @if (session('success'))
+                <div
+                    class="mb-6 bg-green-50 border-l-4 border-green-600 p-4 text-green-800 text-sm font-bold flex items-center gap-2 shadow-sm">
+                    <span>✅</span> {{ session('success') }}
+                </div>
+            @endif
+            @if (session('error'))
+                <div
+                    class="mb-6 bg-red-50 border-l-4 border-red-600 p-4 text-red-800 text-sm font-bold flex items-center gap-2 shadow-sm">
+                    <span>⚠️</span> {{ session('error') }}
+                </div>
+            @endif
+
+            {{-- 1. TAMPILAN MOBILE (HP) --}}
+            <div id="tampilan-hp" class="space-y-4">
+                @forelse($jurnals as $item)
+                    <div
+                        class="bg-white border-2 border-gray-100 p-5 shadow-sm relative group hover:border-blue-200 transition">
+
+                        {{-- Header Kartu (Tanggal & Kategori) --}}
+                        <div class="flex justify-between items-start mb-3 border-b border-gray-100 pb-2">
+                            <div>
+                                <div class="text-xs font-black text-blue-700 uppercase tracking-wide">
+                                    {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}
                                 </div>
-                                <a href="{{ route('jurnal.export') }}"
-                                    class="px-3 py-1.5 bg-green-600 text-white rounded font-bold text-xs hover:bg-green-700 transition flex items-center gap-1 whitespace-nowrap">
-                                    📥 Export Excel
-                                </a>
-                            @endif
-                            <a href="{{ route('jurnal.create') }}"
-                                class="px-3 py-1.5 bg-black text-white text-xs font-bold rounded hover:bg-gray-800 transition shadow-sm whitespace-nowrap">
-                                + Tulis Refleksi
+                                <div class="text-[10px] text-gray-400 font-bold uppercase">
+                                    {{ \Carbon\Carbon::parse($item->created_at)->format('H:i') }} WIB
+                                </div>
+                            </div>
+                            <span
+                                class="px-2 py-1 text-[10px] font-bold uppercase tracking-wide border bg-gray-50 text-gray-700 border-gray-200 truncate max-w-[120px]">
+                                {{ $item->kategori }}
+                            </span>
+                        </div>
+
+                        {{-- Isi Kartu --}}
+                        <div class="mb-4">
+                            <h4 class="text-lg font-black text-gray-900 leading-tight mb-1 truncate">
+                                {{ $item->judul_refleksi }}
+                            </h4>
+                            <div class="text-xs font-bold text-gray-500 uppercase mb-3">
+                                Penulis: <span class="text-black">{{ $item->nama_guru }}</span>
+                            </div>
+                            <p
+                                class="text-gray-600 text-sm italic bg-gray-50 p-3 border-l-2 border-gray-300 line-clamp-2">
+                                "{{ strip_tags($item->isi_refleksi) }}"
+                            </p>
+                        </div>
+
+                        {{-- Checkbox Admin --}}
+                        @if (Auth::user()->role == 'admin')
+                            <div class="absolute bottom-4 right-4 z-10">
+                                <input type="checkbox" name="ids[]" value="{{ $item->id }}"
+                                    class="item-checkbox w-6 h-6 border-2 border-gray-300 text-red-600 focus:ring-red-500 rounded-none">
+                            </div>
+                        @endif
+
+                        {{-- Tombol Detail --}}
+                        <div class="mt-4 pt-3 border-t border-gray-100">
+                            <a href="{{ route('jurnal.show', $item->id) }}"
+                                class="inline-block text-xs bg-gray-900 text-white px-4 py-2 font-bold uppercase tracking-wider hover:bg-blue-700 transition shadow-sm">
+                                Baca Selengkapnya &rarr;
                             </a>
                         </div>
                     </div>
+                @empty
+                    <div
+                        class="text-center py-10 bg-gray-50 border-2 border-dashed border-gray-200 text-gray-400 italic">
+                        Belum ada catatan refleksi.
+                    </div>
+                @endforelse
+            </div>
 
-                    {{-- 1. TAMPILAN MOBILE (HP) - KARTU --}}
-                    <div id="tampilan-hp" class="space-y-4">
-                        @forelse($jurnals as $item)
-                            <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4 relative">
-
-                                {{-- Baris 1: Tanggal & Kategori --}}
-                                <div class="flex justify-between items-start mb-2">
-                                    <div>
-                                        <div class="text-xs font-bold text-gray-500 uppercase">
-                                            {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}
-                                        </div>
-                                        <div class="text-[10px] text-gray-400">
-                                            🕒 {{ \Carbon\Carbon::parse($item->created_at)->format('H:i') }} WIB
-                                        </div>
-                                    </div>
-                                    <span
-                                        class="px-2 py-1 text-[10px] font-bold rounded bg-gray-100 text-gray-600 border truncate max-w-[100px]">
-                                        {{ $item->kategori }}
+            {{-- 2. TAMPILAN LAPTOP (DESKTOP) --}}
+            <div id="tampilan-laptop" class="overflow-hidden border border-gray-200 shadow-sm">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-900 text-white">
+                        <tr>
+                            @if (Auth::user()->role == 'admin')
+                                <th class="px-4 py-4 text-center w-12">
+                                    <span class="text-[10px] font-black text-white uppercase tracking-widest">
+                                        PILIH
                                     </span>
-                                </div>
-
-                                {{-- Baris 2: Penulis & Konten --}}
-                                <div class="mb-4">
-                                    <div class="text-[10px] font-bold text-blue-600 mb-1 uppercase">Oleh:
-                                        {{ $item->nama_guru }}</div>
-                                    <h4 class="text-gray-900 font-bold text-base leading-tight truncate">
-                                        {{ $item->judul_refleksi }}</h4>
-                                    <p
-                                        class="text-gray-500 text-xs italic mt-2 bg-gray-50 p-2 rounded line-clamp-2 truncate">
-                                        "{{ strip_tags($item->isi_refleksi) }}"
-                                    </p>
-                                </div>
-
-                                {{-- Checkbox Admin (Pojok Kanan Bawah) --}}
+                                </th>
+                            @endif
+                            <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-widest w-40">Tanggal
+                            </th>
+                            <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-widest w-48">Penulis
+                            </th>
+                            <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-widest w-40">Kategori
+                            </th>
+                            <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-widest">Judul &
+                                Ringkasan</th>
+                            <th class="px-6 py-4 text-center text-xs font-black uppercase tracking-widest w-32">Aksi
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($jurnals as $item)
+                            <tr class="hover:bg-blue-50 transition duration-150 group">
                                 @if (Auth::user()->role == 'admin')
-                                    <div class="absolute bottom-3 right-3 z-10">
+                                    <td class="px-4 py-4 text-center align-middle bg-gray-50 group-hover:bg-blue-50">
                                         <input type="checkbox" name="ids[]" value="{{ $item->id }}"
-                                            class="item-checkbox w-6 h-6 rounded border-gray-300 text-red-600 focus:ring-red-500 bg-gray-50">
-                                    </div>
+                                            class="item-checkbox w-5 h-5 border-2 border-gray-300 text-black focus:ring-black rounded-none">
+                                    </td>
                                 @endif
 
-                                {{-- Tombol Detail --}}
-                                <div class="mt-4">
+                                {{-- Tanggal --}}
+                                <td class="px-6 py-4 whitespace-nowrap align-top">
+                                    <div class="text-sm font-bold text-gray-900">
+                                        {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}
+                                    </div>
+                                    <div class="text-xs text-gray-400 font-bold mt-1">
+                                        {{ \Carbon\Carbon::parse($item->created_at)->format('H:i') }} WIB
+                                    </div>
+                                </td>
+
+                                {{-- Penulis --}}
+                                <td class="px-6 py-4 align-top">
+                                    <div class="text-sm font-bold text-blue-700 uppercase truncate w-[200px]">
+                                        {{ $item->nama_guru }}
+                                    </div>
+                                </td>
+
+                                {{-- Kategori --}}
+                                <td class="px-6 py-4 align-top">
+                                    <span
+                                        class="inline-block bg-gray-100 text-gray-700 text-[10px] font-bold px-2 py-1 uppercase tracking-wide border border-gray-300 truncate max-w-[150px]">
+                                        {{ $item->kategori }}
+                                    </span>
+                                </td>
+
+                                {{-- Judul & Isi --}}
+                                <td class="px-6 py-4 align-top">
+                                    <div class="text-sm font-bold text-gray-900 leading-snug mb-1 truncate w-[600px]">
+                                        {{ $item->judul_refleksi }}
+                                    </div>
+                                    <div
+                                        class="text-xs text-gray-500 italic truncate w-64 border-l-2 border-gray-300 pl-2">
+                                        "{{ Str::limit(strip_tags($item->isi_refleksi), 50) }}"
+                                    </div>
+                                </td>
+
+                                {{-- Aksi --}}
+                                <td class="px-6 py-4 align-top text-center">
                                     <a href="{{ route('jurnal.show', $item->id) }}"
-                                        class="inline-block text-xs bg-blue-50 text-blue-700 border border-blue-200 px-4 py-2 rounded-lg font-bold">
-                                        Baca Detail &rarr;
+                                        class="text-xs font-bold text-blue-600 hover:text-black border-b border-blue-600 hover:border-black transition uppercase tracking-wide">
+                                        Baca Detail
                                     </a>
-                                </div>
-                            </div>
+                                </td>
+                            </tr>
                         @empty
-                            <div
-                                class="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-300 text-gray-500 italic text-sm">
-                                Belum ada catatan jurnal.
-                            </div>
+                            <tr>
+                                <td colspan="6" class="px-6 py-10 text-center text-gray-400 italic bg-gray-50">
+                                    Belum ada catatan refleksi.
+                                </td>
+                            </tr>
                         @endforelse
-                    </div>
-
-                    {{-- 2. TAMPILAN LAPTOP (DESKTOP) - TABEL --}}
-                    <div id="tampilan-laptop" class="overflow-x-auto border rounded-lg">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    @if (Auth::user()->role == 'admin')
-                                        <th class="px-4 py-3 text-left w-10">
-                                            <input type="checkbox" id="select-all"
-                                                class="rounded border-gray-300 text-black focus:ring-black">
-                                        </th>
-                                    @endif
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-40">
-                                        Tanggal</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-48">
-                                        Penulis</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-40">
-                                        Topik</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                        Judul & Isi Singkat</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-32">
-                                        Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse($jurnals as $item)
-                                    <tr class="hover:bg-gray-50 transition">
-                                        @if (Auth::user()->role == 'admin')
-                                            <td class="px-4 py-3 align-middle">
-                                                <input type="checkbox" name="ids[]" value="{{ $item->id }}"
-                                                    class="item-checkbox rounded border-gray-300 text-black focus:ring-black">
-                                            </td>
-                                        @endif
-                                        <td class="px-6 py-4 whitespace-nowrap align-middle">
-                                            <div class="text-sm font-bold text-gray-900">
-                                                {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}
-                                            </div>
-                                            <div class="text-xs text-gray-500">🕒
-                                                {{ \Carbon\Carbon::parse($item->created_at)->format('H:i') }} WIB</div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap align-middle">
-                                            <div class="text-sm font-bold text-gray-700">{{ $item->nama_guru }}</div>
-                                        </td>
-                                        <td class="px-6 py-4 align-middle">
-                                            <span
-                                                class="px-3 py-1 inline-flex text-xs leading-5 font-semibold text-gray-800 bg-gray-100 rounded-full truncate max-w-[150px]"
-                                                title="{{ $item->kategori }}">
-                                                {{ $item->kategori }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 align-middle">
-                                            <div class="w-64 truncate text-sm font-bold text-gray-900"
-                                                title="{{ $item->judul_refleksi }}">{{ $item->judul_refleksi }}</div>
-                                            <div class="w-64 truncate text-xs text-gray-500 mt-1">
-                                                {{ strip_tags($item->isi_refleksi) }}</div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap align-middle">
-                                            <a href="{{ route('jurnal.show', $item->id) }}"
-                                                class="text-blue-600 hover:text-blue-900 font-bold bg-blue-50 px-3 py-2 rounded border border-blue-200 transition text-xs">Baca
-                                                Detail</a>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="px-6 py-8 text-center text-gray-500 italic">Belum ada
-                                            catatan refleksi.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-
-                </div>
+                    </tbody>
+                </table>
             </div>
+
         </div>
     </div>
 
@@ -222,10 +247,10 @@
         document.getElementById('btn-hapus-massal')?.addEventListener('click', function() {
             let checkboxes = document.querySelectorAll('.item-checkbox:checked');
             if (checkboxes.length === 0) {
-                alert('⚠️ Pilih minimal satu data!');
+                alert('⚠️ Harap pilih minimal satu data untuk dihapus!');
                 return;
             }
-            if (confirm('❓ Yakin hapus ' + checkboxes.length + ' data terpilih?')) {
+            if (confirm('❓ Apakah Anda YAKIN ingin menghapus ' + checkboxes.length + ' data terpilih?')) {
                 let form = document.getElementById('bulk-delete-form');
                 checkboxes.forEach(chk => {
                     let input = document.createElement('input');
