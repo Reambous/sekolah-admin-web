@@ -1,92 +1,101 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Detail Berita') }}</h2>
+        {{-- Header dikosongkan agar menyatu dengan body --}}
     </x-slot>
 
-    <div class="py-8">
+    <div class="py-12 bg-white min-h-screen font-sans text-gray-900">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
 
-                <div class="p-8 border-b border-gray-200">
+            {{-- KARTU UTAMA BERITA --}}
+            <div class="bg-white border-2 border-gray-200 shadow-sm relative mb-8">
 
+                <div class="p-8 md:p-12">
 
+                    {{-- 1. HEADER (Kategori, Tanggal, Judul) --}}
+                    <div class="border-b-4 border-gray-900 pb-6 mb-8">
+                        <div class="flex flex-wrap items-center gap-3 mb-4">
+                            <span class="bg-blue-900 text-white text-xs font-black px-3 py-1 uppercase tracking-widest">
+                                Berita Sekolah
+                            </span>
+                            <span class="text-gray-500 text-xs font-bold uppercase tracking-wide">
+                                {{ \Carbon\Carbon::parse($berita->created_at)->translatedFormat('l, d F Y') }}
+                            </span>
+                        </div>
 
-                    <div class="text-sm text-gray-600 mb-1 pb-2 border-b border-gray-100 flex flex-wrap gap-4">
-                        <span class="font-bold text-black">📅
-                            {{ \Carbon\Carbon::parse($berita->created_at)->translatedFormat('l, d F Y - H:i') }}
-                            WIB</span>
-                        @if ($berita->created_at != $berita->updated_at)
-                            <span class="italic text-gray-400">(Diedit:
-                                {{ \Carbon\Carbon::parse($berita->updated_at)->format('H:i') }} WIB)</span>
-                        @endif
-                        <span>✍️ {{ $berita->penulis }}</span>
+                        <h1
+                            class="text-3xl md:text-5xl font-black text-gray-900 mb-4 uppercase leading-tight tracking-tight break-words">
+                            {{ $berita->judul }}
+                        </h1>
+
+                        <div class="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-widest">
+                            <span class="text-blue-700">Penulis: {{ $berita->penulis }}</span>
+                            @if ($berita->created_at != $berita->updated_at)
+                                <span class="text-gray-300">|</span>
+                                <span class="italic text-gray-400">Diedit:
+                                    {{ \Carbon\Carbon::parse($berita->updated_at)->format('H:i') }} WIB</span>
+                            @endif
+                        </div>
                     </div>
 
-                    {{-- 1. JUDUL UTAMA (FIX: break-words) --}}
-                    <h1 class="text-3xl font-extrabold text-gray-900 mb-4 leading-tight break-words">
-                        {{ $berita->judul }}
-                    </h1>
-
+                    {{-- 2. GAMBAR UTAMA --}}
                     @if ($berita->gambar)
-                        <div class="mb-6 bg-gray-50 p-2 border border-gray-200 rounded inline-block">
+                        <div class="mb-10 border border-gray-200 p-1 bg-gray-50">
                             <img src="{{ asset('storage/' . $berita->gambar) }}"
-                                class="max-h-[350px] w-auto object-contain rounded">
+                                class="w-full h-auto object-cover max-h-[500px]" alt="Gambar Berita">
                         </div>
                     @endif
 
+                    {{-- 3. LAMPIRAN (Jika Ada) --}}
                     @if ($berita->lampiran)
                         <div
-                            class="mb-8 p-4 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-between">
+                            class="mb-10 bg-blue-50 border-l-4 border-blue-900 p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                             <div class="flex items-center gap-3">
-                                <div class="bg-white p-2 rounded border border-gray-200 text-gray-600">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="bg-white p-2 border border-gray-200 shadow-sm">
+                                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13">
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
                                         </path>
                                     </svg>
                                 </div>
-                                <div class="overflow-hidden">
-                                    <p class="text-sm font-bold text-gray-900">Lampiran Dokumen</p>
-                                    {{-- Nama file juga dipotong jika terlalu panjang --}}
-                                    <p class="text-xs text-gray-600 truncate">
-                                        {{ $berita->nama_file_asli ?? 'Dokumen.pdf' }}</p>
+                                <div>
+                                    <p class="text-sm font-black text-gray-900 uppercase">Dokumen Lampiran</p>
+                                    <p class="text-xs text-gray-600 truncate max-w-xs">
+                                        {{ $berita->nama_file_asli ?? 'Unduh File' }}</p>
                                 </div>
                             </div>
-
-                            <a href="{{ asset('storage/' . $berita->lampiran) }}"
-                                download="{{ $berita->nama_file_asli ?? 'download' }}"
-                                class="bg-black text-white px-4 py-2 rounded text-xs font-bold hover:bg-gray-800 transition flex items-center gap-2 flex-shrink-0">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4 4m4-4v12"></path>
-                                </svg>
-                                Unduh
+                            <a href="{{ asset('storage/' . $berita->lampiran) }}" download
+                                class="bg-gray-900 text-white px-5 py-2 text-xs font-bold uppercase tracking-wider hover:bg-gray-700 transition shadow-sm flex-shrink-0">
+                                📥 Download
                             </a>
                         </div>
                     @endif
 
-                    {{-- 2. ISI BERITA (FIX: break-words + whitespace-pre-line) --}}
+                    {{-- 4. ISI BERITA (SERIF FONT) --}}
                     <div
-                        class="prose max-w-none text-gray-800 text-base leading-relaxed whitespace-pre-line text-justify break-words">
-                        {{ $berita->isi ?? 'Tidak ada keterangan tambahan.' }}
+                        class="prose max-w-none text-gray-900 text-lg leading-relaxed whitespace-pre-line text-justify font-serif break-words mb-10">
+                        {{ $berita->isi }}
                     </div>
-                    <div class="flex justify-between items-center pt-6 border-t border-gray-100">
+
+                    {{-- 5. FOOTER & NAVIGASI --}}
+                    <div
+                        class="flex flex-col md:flex-row justify-between items-center pt-8 border-t-2 border-gray-100 gap-4">
                         <a href="{{ route('berita.index') }}"
-                            class="text-gray-600 font-bold text-sm hover:text-gray-900">
-                            &larr; Kembali
+                            class="text-xs font-bold text-gray-900 uppercase tracking-widest hover:text-blue-700 hover:underline transition">
+                            &larr; Kembali ke Papan Pengumuman
                         </a>
 
                         <div class="flex gap-2">
                             @if (Auth::user()->role == 'admin' || $berita->user_id == Auth::id())
                                 <a href="{{ route('berita.edit', $berita->id) }}"
-                                    class="bg-yellow-500 text-white px-4 py-2 rounded font-bold text-sm hover:bg-yellow-600 transition">
+                                    class="bg-yellow-400 text-black px-5 py-2 text-xs font-black uppercase tracking-wider hover:bg-yellow-500 transition shadow-sm">
                                     Edit
                                 </a>
                                 <form action="{{ route('berita.destroy', $berita->id) }}" method="POST"
-                                    onsubmit="return confirm('Hapus?')">
+                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus berita ini?')">
                                     @csrf @method('DELETE')
                                     <button
-                                        class="bg-red-600 text-white px-4 py-2 rounded font-bold text-sm hover:bg-red-700 transition">
+                                        class="bg-red-600 text-white px-5 py-2 text-xs font-black uppercase tracking-wider hover:bg-red-700 transition shadow-sm">
                                         Hapus
                                     </button>
                                 </form>
@@ -95,51 +104,70 @@
                     </div>
                 </div>
 
-                <div class="bg-gray-50 p-8">
-                    <h3 class="font-bold text-gray-900 mb-4 border-b pb-2 border-gray-200">
-                        Komentar ({{ $komentar->count() }})
+                {{-- AREA KOMENTAR --}}
+                <div class="bg-gray-50 border-t-2 border-gray-200 p-8 md:p-12">
+                    <h3
+                        class="text-xl font-black text-gray-900 uppercase tracking-tighter mb-6 flex items-center gap-2">
+                        <span class="w-2 h-6 bg-black inline-block"></span>
+                        Diskusi ({{ $komentar->count() }})
                     </h3>
 
-                    <form action="{{ route('berita.comment', $berita->id) }}" method="POST" class="mb-6 flex gap-3">
+                    {{-- Form Komentar --}}
+                    <form action="{{ route('berita.comment', $berita->id) }}" method="POST" class="mb-10">
                         @csrf
-                        <div class="flex-1">
-                            <textarea name="isi_komentar" rows="2"
-                                class="w-full rounded border-gray-300 text-sm focus:border-black focus:ring-black" placeholder="Tulis komentar..."
-                                required></textarea>
+                        <div class="flex flex-col md:flex-row gap-0 shadow-sm">
+                            <textarea name="isi_komentar" rows="3"
+                                class="w-full bg-white border-2 border-gray-300 text-sm focus:border-black focus:ring-0 rounded-none p-4 placeholder-gray-400"
+                                placeholder="Tulis tanggapan Anda di sini..." required></textarea>
+                            <button
+                                class="bg-black text-white px-8 py-3 md:py-0 font-bold uppercase tracking-wider hover:bg-gray-800 transition">
+                                Kirim
+                            </button>
                         </div>
-                        <button
-                            class="bg-black text-white px-5 py-2 rounded font-bold text-sm hover:bg-gray-800 h-fit">Kirim</button>
                     </form>
 
-
-
-                    <div class="space-y-4">
+                    {{-- List Komentar --}}
+                    <div class="space-y-6">
                         @foreach ($komentar as $k)
-                            <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
-                                <div class="flex justify-between items-start mb-1">
-                                    <span class="font-bold text-gray-900 text-sm">{{ $k->nama_user }}</span>
-                                    <div class="flex items-center gap-2 flex-shrink-0">
-
-                                        <span
-                                            class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($k->created_at)->diffForHumans() }}</span>
-                                        @if (Auth::user()->role == 'admin' || $k->user_id == Auth::id())
-                                            @if ($k->user_id == Auth::id())
-                                                <a href="{{ route('berita.comment.edit', $k->id) }}"
-                                                    class="text-xs font-bold text-blue-600 hover:underline">Edit</a>
-                                            @endif
-                                            <form action="{{ route('berita.comment.destroy', $k->id) }}" method="POST"
-                                                onsubmit="return confirm('Hapus?')">
-                                                @csrf @method('DELETE')
-                                                <button
-                                                    class="text-xs font-bold text-red-600 hover:underline">Hapus</button>
-                                            </form>
-                                        @endif
-                                    </div>
+                            <div class="flex gap-4 group">
+                                {{-- Avatar Inisial --}}
+                                <div
+                                    class="w-10 h-10 bg-gray-200 flex items-center justify-center text-gray-500 font-black text-sm uppercase flex-shrink-0 border border-gray-300">
+                                    {{ substr($k->nama_user, 0, 1) }}
                                 </div>
 
-                                {{-- 3. ISI KOMENTAR (FIX: break-words + whitespace-pre-line) --}}
-                                <div class="text-gray-700 text-sm leading-relaxed whitespace-pre-line break-words">
-                                    {{ $k->isi_komentar }}
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-start mb-1">
+                                        <div>
+                                            <span
+                                                class="font-bold text-gray-900 text-sm uppercase mr-2">{{ $k->nama_user }}</span>
+                                            <span
+                                                class="text-[10px] font-bold text-gray-400 uppercase">{{ \Carbon\Carbon::parse($k->created_at)->diffForHumans() }}</span>
+                                        </div>
+
+                                        {{-- Aksi Komentar --}}
+                                        @if (Auth::user()->role == 'admin' || $k->user_id == Auth::id())
+                                            <div
+                                                class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                @if ($k->user_id == Auth::id())
+                                                    <a href="{{ route('berita.comment.edit', $k->id) }}"
+                                                        class="text-[10px] font-bold text-blue-600 hover:underline uppercase">Edit</a>
+                                                    <span class="text-gray-300 text-[10px]">|</span>
+                                                @endif
+                                                <form action="{{ route('berita.comment.destroy', $k->id) }}"
+                                                    method="POST" onsubmit="return confirm('Hapus komentar?')">
+                                                    @csrf @method('DELETE')
+                                                    <button
+                                                        class="text-[10px] font-bold text-red-600 hover:underline uppercase">Hapus</button>
+                                                </form>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <p
+                                        class="text-gray-700 text-sm leading-relaxed whitespace-pre-line break-words bg-white p-3 border border-gray-200">
+                                        {{ $k->isi_komentar }}
+                                    </p>
                                 </div>
                             </div>
                         @endforeach

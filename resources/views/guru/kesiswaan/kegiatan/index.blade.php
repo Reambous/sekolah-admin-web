@@ -128,7 +128,7 @@
 
                             @if (Auth::user()->role == 'admin')
                                 @if ($item->status == 'pending')
-                                    <form action="{{ route('kegiatan.kegiatan.approve', $item->id) }}" method="POST">
+                                    <form action="{{ route('kesiswaan.kegiatan.approve', $item->id) }}" method="POST">
                                         @csrf @method('PATCH')
                                         <button type="submit"
                                             class="text-xs bg-green-600 text-white px-3 py-1.5 font-bold uppercase tracking-wider hover:bg-green-700">
@@ -136,8 +136,8 @@
                                         </button>
                                     </form>
                                 @elseif ($item->status == 'disetujui')
-                                    <form action="{{ route('kegiatan.kegiatan.unapprove', $item->id) }}" method="POST"
-                                        onsubmit="return confirm('Batalkan?')">
+                                    <form action="{{ route('kesiswaan.kegiatan.unapprove', $item->id) }}"
+                                        method="POST" onsubmit="return confirm('Batalkan?')">
                                         @csrf @method('PATCH')
                                         <button type="submit"
                                             class="text-xs bg-red-600 text-white px-3 py-1.5 font-bold uppercase tracking-wider hover:bg-red-700">
@@ -242,7 +242,7 @@
 
                                         @if (Auth::user()->role == 'admin')
                                             @if ($item->status == 'pending')
-                                                <form action="{{ route('kegiatan.kegiatan.approve', $item->id) }}"
+                                                <form action="{{ route('kesiswaan.kegiatan.approve', $item->id) }}"
                                                     method="POST" class="w-full">
                                                     @csrf @method('PATCH')
                                                     <button type="submit"
@@ -251,7 +251,7 @@
                                                     </button>
                                                 </form>
                                             @elseif ($item->status == 'disetujui')
-                                                <form action="{{ route('kegiatan.kegiatan.unapprove', $item->id) }}"
+                                                <form action="{{ route('kesiswaan.kegiatan.unapprove', $item->id) }}"
                                                     method="POST" onsubmit="return confirm('Batalkan?')"
                                                     class="w-full">
                                                     @csrf @method('PATCH')
@@ -268,7 +268,7 @@
                         @empty
                             <tr>
                                 <td colspan="7" class="px-6 py-10 text-center text-gray-400 italic bg-gray-50">
-                                    Belum ada data kegiatan kegiatan.
+                                    Belum ada data kegiatan kesiswaan.
                                 </td>
                             </tr>
                         @endforelse
