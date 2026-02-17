@@ -1,126 +1,155 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Input Lomba Tim / Individu') }}</h2>
+        {{-- Header dikosongkan agar menyatu dengan body --}}
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 bg-white min-h-screen font-sans text-gray-900">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
 
-                    <form action="{{ route('kesiswaan.lomba.store') }}" method="POST">
-                        @csrf
+            {{-- KARTU UTAMA --}}
+            <div class="bg-white border-2 border-gray-200 p-8 shadow-sm relative">
 
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
-                            <h3 class="font-bold text-gray-700 mb-4 border-b pb-2">Informasi Lomba</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
-                                    <input type="date" name="tanggal"
-                                        class="w-full rounded-md border-gray-300 text-sm focus:ring-blue-500 focus:border-blue-500"
-                                        required>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Lomba</label>
-                                    <input type="text" name="jenis_lomba" placeholder="Contoh: Voli Putra O2SN"
-                                        class="w-full rounded-md border-gray-300 text-sm focus:ring-blue-500 focus:border-blue-500"
-                                        required>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Prestasi / Juara</label>
-                                    <input type="text" name="prestasi" placeholder="Contoh: Juara 2"
-                                        class="w-full rounded-md border-gray-300 text-sm focus:ring-blue-500 focus:border-blue-500"
-                                        required>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Catatan
-                                        (Opsional)</label>
-                                    <input type="text" name="refleksi" placeholder="Catatan tambahan..."
-                                        class="w-full rounded-md border-gray-300 text-sm focus:ring-blue-500 focus:border-blue-500">
-                                </div>
+                {{-- HEADER HALAMAN --}}
+                <div class="border-b-4 border-gray-900 pb-4 mb-8">
+                    <h2 class="text-3xl font-black text-gray-900 uppercase tracking-tighter mb-1">
+                        Input Prestasi Baru
+                    </h2>
+                    <p class="text-gray-500 text-sm font-medium uppercase tracking-wide">
+                        Tambahkan data lomba tim atau individu
+                    </p>
+                </div>
+
+                <form action="{{ route('kesiswaan.lomba.store') }}" method="POST">
+                    @csrf
+
+                    {{-- 1. INFORMASI UTAMA --}}
+                    <div class="mb-10">
+                        <h3 class="text-lg font-black text-gray-900 uppercase mb-4 flex items-center gap-2">
+                            <span class="w-2 h-6 bg-yellow-400 inline-block"></span>
+                            Informasi Lomba
+                        </h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {{-- Tanggal --}}
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-gray-900 uppercase tracking-widest mb-2">Tanggal</label>
+                                <input type="date" name="tanggal" required
+                                    class="w-full bg-gray-50 border-2 border-gray-200 text-gray-900 text-sm font-medium focus:bg-white focus:border-blue-900 focus:ring-0 transition-colors rounded-none px-4 py-3">
+                            </div>
+
+                            {{-- Jenis Lomba --}}
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-gray-900 uppercase tracking-widest mb-2">Jenis
+                                    Lomba</label>
+                                <input type="text" name="jenis_lomba" placeholder="Contoh: FLS2N Tingkat Kota"
+                                    required
+                                    class="w-full bg-gray-50 border-2 border-gray-200 text-gray-900 text-sm font-medium focus:bg-white focus:border-blue-900 focus:ring-0 transition-colors rounded-none px-4 py-3 placeholder-gray-400">
+                            </div>
+
+                            {{-- Prestasi --}}
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-gray-900 uppercase tracking-widest mb-2">Prestasi
+                                    / Juara</label>
+                                <input type="text" name="prestasi" placeholder="Contoh: Juara 1 Menyanyi Solo"
+                                    required
+                                    class="w-full bg-gray-50 border-2 border-gray-200 text-gray-900 text-sm font-medium focus:bg-white focus:border-blue-900 focus:ring-0 transition-colors rounded-none px-4 py-3 placeholder-gray-400">
+                            </div>
+
+                            {{-- Catatan --}}
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-gray-900 uppercase tracking-widest mb-2">Catatan
+                                    (Opsional)</label>
+                                <input type="text" name="refleksi" placeholder="Catatan tambahan..."
+                                    class="w-full bg-gray-50 border-2 border-gray-200 text-gray-900 text-sm font-medium focus:bg-white focus:border-blue-900 focus:ring-0 transition-colors rounded-none px-4 py-3 placeholder-gray-400">
                             </div>
                         </div>
+                    </div>
 
-                        <div x-data="{ rows: [{ kelas: '', nama: '' }] }">
+                    {{-- 2. DAFTAR PESERTA (ALPINE JS) --}}
+                    <div class="mb-8" x-data="{ rows: [{ kelas: '', nama: '' }] }">
 
-                            <div class="flex justify-between items-end mb-2">
-                                <div>
-                                    <h3 class="font-bold text-gray-700">Daftar Peserta</h3>
-                                    <p class="text-xs text-gray-500">Tips: Masukkan nama dipisah koma (cth: Budi, Siti,
-                                        Ahmad) untuk satu kelas yang sama.</p>
-                                </div>
-                                <button type="button" @click="rows.push({kelas: '', nama: ''})"
-                                    class="text-xs bg-blue-600 text-white px-3 py-2 rounded font-bold hover:bg-blue-700 transition shadow-sm">
-                                    + Tambah Baris Kelas
-                                </button>
-                            </div>
-
-                            <div class="border rounded-lg overflow-hidden shadow-sm">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-100">
-                                        <tr>
-                                            <th
-                                                class="px-4 py-2 text-left text-xs font-bold text-gray-600 uppercase w-10">
-                                                No</th>
-                                            <th
-                                                class="px-4 py-2 text-left text-xs font-bold text-gray-600 uppercase w-1/4">
-                                                Kelas</th>
-                                            <th class="px-4 py-2 text-left text-xs font-bold text-gray-600 uppercase">
-                                                Nama Siswa (Pisahkan Koma)</th>
-                                            <th
-                                                class="px-4 py-2 text-center text-xs font-bold text-gray-600 uppercase w-16">
-                                                Hapus</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                        <template x-for="(row, index) in rows" :key="index">
-                                            <tr>
-                                                <td class="px-4 py-3 text-center text-gray-500 text-sm"
-                                                    x-text="index + 1"></td>
-
-                                                <td class="px-4 py-3 align-top">
-                                                    <input type="text" :name="'peserta[' + index + '][kelas]'"
-                                                        x-model="row.kelas" placeholder="Cth: XII RPL 1"
-                                                        class="w-full rounded-md border-gray-300 text-sm focus:ring-blue-500 focus:border-blue-500 uppercase"
-                                                        required>
-                                                </td>
-
-                                                <td class="px-4 py-3 align-top">
-                                                    <textarea :name="'peserta[' + index + '][nama]'" x-model="row.nama" rows="2"
-                                                        placeholder="Cth: Budi Santoso, Siti Aminah, Ahmad Dhani..."
-                                                        class="w-full rounded-md border-gray-300 text-sm focus:ring-blue-500 focus:border-blue-500" required></textarea>
-                                                </td>
-
-                                                <td class="px-4 py-3 text-center align-middle">
-                                                    <button type="button"
-                                                        @click="rows.length > 1 ? rows.splice(index, 1) : alert('Minimal 1 kelas!')"
-                                                        class="text-red-500 hover:text-red-700 transition">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto"
-                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2"
-                                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                        </svg>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </template>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="flex justify-end gap-3 mt-8 pt-4 border-t">
-                            <a href="{{ route('kesiswaan.lomba.index') }}"
-                                class="text-gray-600 py-2 px-4 text-sm font-medium hover:bg-gray-100 rounded">Batal</a>
-                            <button type="submit"
-                                class="bg-gray-900 text-white font-bold py-2 px-6 rounded shadow hover:bg-gray-800 transition">
-                                Simpan Data Lomba
+                        <div class="flex justify-between items-end mb-4">
+                            <h3 class="text-lg font-black text-gray-900 uppercase flex items-center gap-2">
+                                <span class="w-2 h-6 bg-blue-900 inline-block"></span>
+                                Daftar Peserta
+                            </h3>
+                            <button type="button" @click="rows.push({kelas: '', nama: ''})"
+                                class="bg-blue-900 text-white px-4 py-2 text-[10px] font-black uppercase tracking-wider hover:bg-blue-800 transition shadow-sm">
+                                + Tambah Baris
                             </button>
                         </div>
-                    </form>
 
-                </div>
+                        <div class="border-2 border-gray-200 overflow-hidden">
+                            <table class="min-w-full">
+                                <thead class="bg-gray-900 text-white">
+                                    <tr>
+                                        <th
+                                            class="px-4 py-3 text-center text-xs font-black uppercase tracking-widest w-12">
+                                            No</th>
+                                        <th
+                                            class="px-4 py-3 text-left text-xs font-black uppercase tracking-widest w-1/4">
+                                            Kelas</th>
+                                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-widest">
+                                            Nama Siswa</th>
+                                        <th
+                                            class="px-4 py-3 text-center text-xs font-black uppercase tracking-widest w-20">
+                                            Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <template x-for="(row, index) in rows" :key="index">
+                                        <tr class="hover:bg-blue-50 transition">
+                                            <td class="px-4 py-3 text-center font-bold text-gray-500 text-sm align-top pt-4"
+                                                x-text="index + 1"></td>
+
+                                            <td class="px-4 py-3 align-top">
+                                                <input type="text" :name="'peserta[' + index + '][kelas]'"
+                                                    x-model="row.kelas" placeholder="Cth: X TKJ 2" required
+                                                    class="w-full bg-gray-50 border-2 border-gray-200 text-xs font-bold uppercase focus:bg-white focus:border-blue-900 focus:ring-0 rounded-none px-2 py-2">
+                                            </td>
+
+                                            <td class="px-4 py-3 align-top">
+                                                <textarea :name="'peserta[' + index + '][nama]'" x-model="row.nama" rows="1" placeholder="Nama siswa..." required
+                                                    class="w-full bg-gray-50 border-2 border-gray-200 text-sm focus:bg-white focus:border-blue-900 focus:ring-0 rounded-none px-2 py-2 placeholder-gray-400"></textarea>
+                                            </td>
+
+                                            <td class="px-4 py-3 text-center align-top pt-3">
+                                                <button type="button"
+                                                    @click="rows.length > 1 ? rows.splice(index, 1) : alert('Minimal 1 kelas!')"
+                                                    class="text-red-600 hover:text-black transition">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase mt-2 tracking-wide">* Pisahkan nama
+                            siswa dengan koma jika lebih dari satu.</p>
+                    </div>
+
+                    {{-- TOMBOL AKSI --}}
+                    <div class="flex items-center justify-between pt-6 border-t-2 border-gray-100">
+                        <a href="{{ route('kesiswaan.lomba.index') }}"
+                            class="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-black hover:underline transition">
+                            Batal
+                        </a>
+                        <button type="submit"
+                            class="bg-gray-900 text-white px-6 py-3 text-xs font-black uppercase tracking-wider hover:bg-blue-900 transition shadow-sm border-b-4 border-black hover:border-blue-950 transform hover:-translate-y-0.5">
+                            Simpan Data
+                        </button>
+                    </div>
+
+                </form>
             </div>
         </div>
     </div>

@@ -1,18 +1,32 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Input Kegiatan Humas') }}</h2>
+        {{-- Header dikosongkan agar menyatu dengan body --}}
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+    <div class="py-12 bg-white min-h-screen font-sans text-gray-900">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
 
-                    {{-- 1. BLOK ERROR (INI YANG MEMUNCULKAN NOTIF "UPS!") --}}
+            {{-- KARTU UTAMA --}}
+            <div class="bg-white border-2 border-gray-200 p-8 shadow-sm relative">
+
+                {{-- HEADER HALAMAN --}}
+                <div class="border-b-4 border-gray-900 pb-4 mb-8">
+                    <h2 class="text-3xl font-black text-gray-900 uppercase tracking-tighter mb-1">
+                        Tambah Kegiatan Humas
+                    </h2>
+                    <p class="text-gray-500 text-sm font-medium uppercase tracking-wide">
+                        Input laporan baru terkait kegiatan humas
+                    </p>
+                </div>
+
+                <div class="p-0 text-gray-900">
+
+                    {{-- Notifikasi Error --}}
                     @if ($errors->any())
-                        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-                            <strong class="font-bold">Ups! Ada kesalahan:</strong>
-                            <ul class="mt-2 list-disc list-inside text-sm">
+                        <div class="mb-6 bg-red-50 border-l-4 border-red-600 p-4 text-red-800">
+                            <strong class="font-black uppercase text-xs tracking-wide block mb-1">Ups! Ada kesalahan
+                                input:</strong>
+                            <ul class="list-disc list-inside text-sm font-medium">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
@@ -23,35 +37,52 @@
                     <form action="{{ route('humas.kegiatan.store') }}" method="POST">
                         @csrf
 
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Kegiatan</label>
-                            <input type="date" name="tanggal"
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                required>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Kegiatan / Program</label>
-                            <input type="text" name="nama_kegiatan"
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                required>
-                        </div>
-
-                        {{-- 2. TEXTAREA YANG BERSIH (Tanpa pesan error di bawahnya) --}}
+                        {{-- Tanggal --}}
                         <div class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Refleksi / Keterangan</label>
-                            <textarea name="refleksi" rows="4"
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required></textarea>
+                            <label for="tanggal"
+                                class="block text-xs font-black text-gray-900 uppercase tracking-widest mb-2">
+                                Tanggal Kegiatan
+                            </label>
+                            <input type="date" name="tanggal" id="tanggal" value="{{ old('tanggal') }}"
+                                class="w-full bg-gray-50 border-2 border-gray-200 text-gray-900 text-sm font-medium focus:bg-white focus:border-blue-900 focus:ring-0 transition-colors rounded-none px-4 py-3">
                         </div>
 
-                        <div class="flex justify-end gap-3 pt-4 border-t">
+                        {{-- Nama Kegiatan --}}
+                        <div class="mb-6">
+                            <label for="nama_kegiatan"
+                                class="block text-xs font-black text-gray-900 uppercase tracking-widest mb-2">
+                                Nama Kegiatan
+                            </label>
+                            <input type="text" name="nama_kegiatan" id="nama_kegiatan"
+                                placeholder="Contoh: Perbaikan AC Ruang Guru" value="{{ old('nama_kegiatan') }}"
+                                class="w-full bg-gray-50 border-2 border-gray-200 text-gray-900 text-sm font-medium focus:bg-white focus:border-blue-900 focus:ring-0 transition-colors rounded-none px-4 py-3 placeholder-gray-400">
+                        </div>
+
+                        {{-- Refleksi --}}
+                        <div class="mb-8">
+                            <label for="refleksi"
+                                class="block text-xs font-black text-gray-900 uppercase tracking-widest mb-2">
+                                Refleksi / Keterangan Evaluasi
+                            </label>
+                            <textarea name="refleksi" id="refleksi" rows="6"
+                                placeholder="Tuliskan kendala, solusi, atau hasil kegiatan di sini secara rinci..."
+                                class="w-full bg-gray-50 border-2 border-gray-200 text-gray-900 text-sm font-medium focus:bg-white focus:border-blue-900 focus:ring-0 transition-colors rounded-none px-4 py-3 placeholder-gray-400">{{ old('refleksi') }}</textarea>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase mt-2 tracking-wide">* Data ini akan
+                                dikunci setelah divalidasi oleh Admin.</p>
+                        </div>
+
+                        {{-- Tombol Aksi --}}
+                        <div class="flex items-center justify-between pt-6 border-t-2 border-gray-100">
                             <a href="{{ route('humas.kegiatan.index') }}"
-                                class="text-gray-600 py-2 px-4 text-sm font-medium hover:bg-gray-100 rounded">Batal</a>
+                                class="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-black hover:underline transition">
+                                Batal
+                            </a>
                             <button type="submit"
-                                class="bg-gray-900 text-white font-bold py-2 px-6 rounded shadow hover:bg-gray-800 transition">
+                                class="bg-gray-900 text-white px-6 py-3 text-xs font-black uppercase tracking-wider hover:bg-blue-900 transition shadow-sm border-b-4 border-black hover:border-blue-950 transform hover:-translate-y-0.5">
                                 Simpan Laporan
                             </button>
                         </div>
+
                     </form>
 
                 </div>

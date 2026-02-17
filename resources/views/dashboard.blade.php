@@ -243,17 +243,17 @@
                                         </div>
 
                                         {{-- Teks --}}
-                                        <div class="flex flex-col justify-center">
+                                        <div class="flex flex-col justify-center truncate">
                                             <div class="text-[10px] font-bold text-blue-600 uppercase mb-1">
                                                 {{ \Carbon\Carbon::parse($news->created_at)->format('d M') }}
                                             </div>
                                             <h4
-                                                class="text-sm font-bold text-gray-900 leading-snug font-serif group-hover:text-blue-700 transition line-clamp-3 truncate w-[200px]">
+                                                class="text-sm font-bold text-gray-900 leading-snug font-serif group-hover:text-blue-700 transition line-clamp-3 truncate">
                                                 <a href="{{ route('berita.show', $news->id) }}">
                                                     {{ $news->judul }}
                                                 </a>
                                             </h4>
-                                            <p class="text-gray-600 text-xs mt-1 line-clamp-4 truncate w-[200px]">
+                                            <p class="text-gray-600 text-xs mt-1 line-clamp-4 truncate ">
                                                 {{ Str::limit(strip_tags($news->isi), 100) }}
                                             </p>
                                         </div>
