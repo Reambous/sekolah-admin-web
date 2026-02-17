@@ -122,7 +122,7 @@
 
                             {{-- 4. Judul Berita --}}
                             <h3
-                                class="text-lg font-black text-gray-900 leading-tight mb-2 group-hover:text-blue-800 transition line-clamp-2">
+                                class="text-lg font-black text-gray-900 leading-tight mb-2 group-hover:text-blue-800 transition break-words">
                                 <a href="{{ route('berita.show', $item->id) }}">
                                     {{ $item->judul }}
                                 </a>

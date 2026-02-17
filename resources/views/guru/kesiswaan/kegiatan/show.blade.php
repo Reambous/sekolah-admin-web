@@ -35,7 +35,7 @@
 
                     {{-- Meta Data Bar --}}
                     <div
-                        class="flex flex-wrap items-center gap-4 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                        class="flex flex-wrap items-center gap-4 text-xs font-bold text-gray-500 uppercase tracking-wide truncate">
                         <span class="flex items-center gap-1">
                             <span class="text-blue-700">👤</span> {{ $kegiatan->nama_guru }}
                         </span>

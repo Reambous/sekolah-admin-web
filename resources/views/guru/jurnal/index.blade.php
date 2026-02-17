@@ -108,11 +108,11 @@
                             <h4 class="text-lg font-black text-gray-900 leading-tight mb-1 truncate">
                                 {{ $item->judul_refleksi }}
                             </h4>
-                            <div class="text-xs font-bold text-gray-500 uppercase mb-3">
+                            <div class="text-xs font-bold text-gray-500 uppercase mb-3 truncate">
                                 Penulis: <span class="text-black">{{ $item->nama_guru }}</span>
                             </div>
                             <p
-                                class="text-gray-600 text-sm italic bg-gray-50 p-3 border-l-2 border-gray-300 line-clamp-2">
+                                class="text-gray-600 text-sm italic bg-gray-50 p-3 border-l-2 border-gray-300 line-clamp-2 truncate">
                                 "{{ strip_tags($item->isi_refleksi) }}"
                             </p>
                         </div>

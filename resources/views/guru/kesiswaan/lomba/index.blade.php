@@ -102,15 +102,15 @@
 
                         {{-- Isi Kartu --}}
                         <div class="mb-4">
-                            <h4 class="text-lg font-black text-gray-900 leading-tight mb-1">
+                            <h4 class="text-lg font-black text-gray-900 leading-tight mb-1 truncate">
                                 {{ $item->jenis_lomba }}
                             </h4>
-                            <div class="text-xs font-bold text-gray-500 uppercase mb-3">
+                            <div class="text-xs font-bold text-gray-500 uppercase mb-3 truncate">
                                 Pelapor: <span class="text-black">{{ $item->nama_guru }}</span>
                             </div>
 
                             {{-- Hasil Prestasi (Highlight) --}}
-                            <div class="bg-gray-50 p-3 border-l-4 border-yellow-400">
+                            <div class="bg-gray-50 p-3 border-l-4 border-yellow-400 truncate">
                                 <div class="text-[10px] font-bold text-gray-400 uppercase mb-1">Hasil / Juara</div>
                                 <div class="text-sm font-bold text-gray-900 italic">
                                     "{{ $item->prestasi }}"

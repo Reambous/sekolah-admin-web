@@ -36,9 +36,9 @@
 
                     {{-- Meta Data Bar --}}
                     <div
-                        class="flex flex-wrap items-center gap-4 text-xs font-bold text-gray-500 uppercase tracking-wide">
-                        <span class="flex items-center gap-1">
-                            <span class="text-blue-700">👤</span> Penulis: {{ $jurnal->nama_guru }}
+                        class=" truncate flex flex-wrap items-center gap-4 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                        <span class="flex items-center gap-1 truncate  ">
+                            <span class="text-blue-700 ">👤</span> Penulis: {{ $jurnal->nama_guru }}
                         </span>
                         <span class="text-gray-300">|</span>
                         <span class="flex items-center gap-1">

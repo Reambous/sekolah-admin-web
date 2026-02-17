@@ -120,10 +120,10 @@
 
                         {{-- Isi Kartu --}}
                         <div class="mb-4">
-                            <div class="text-xs font-bold text-gray-500 uppercase mb-1">
+                            <div class="text-xs font-bold text-gray-500 uppercase mb-1 truncate">
                                 Guru: <span class="text-black">{{ $item->nama_guru }}</span>
                             </div>
-                            <p class="text-gray-600 text-sm italic bg-gray-50 p-3 border-l-2 border-gray-300">
+                            <p class="text-gray-600 text-sm italic bg-gray-50 p-3 border-l-2 border-gray-300 truncate">
                                 "{{ $item->alasan }}"
                             </p>
                         </div>
@@ -207,9 +207,9 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="bg-white divide-y divide-gray-200 ">
                         @forelse($data_ijin as $item)
-                            <tr class="hover:bg-blue-50 transition duration-150 group">
+                            <tr class="hover:bg-blue-50 transition duration-150 group ">
                                 @if (Auth::user()->role == 'admin')
                                     <td class="px-4 py-4 text-center align-middle bg-gray-50 group-hover:bg-blue-50">
                                         <input type="checkbox" name="ids[]" value="{{ $item->id }}"
@@ -230,8 +230,8 @@
                                 </td>
 
                                 {{-- Guru --}}
-                                <td class="px-6 py-4 align-top">
-                                    <div class="text-sm font-bold text-blue-700 uppercase truncate max-w-xs">
+                                <td class="px-6 py-4 align-top ">
+                                    <div class="text-sm font-bold  text-blue-700 uppercase truncate max-w-xs">
                                         {{ $item->nama_guru }}
                                     </div>
                                 </td>

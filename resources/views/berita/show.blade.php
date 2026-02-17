@@ -127,7 +127,7 @@
                     </form>
 
                     {{-- List Komentar --}}
-                    <div class="space-y-6">
+                    <div class="space-y-6"> {{-- JANGAN PAKAI TRUNCATE DISINI --}}
                         @foreach ($komentar as $k)
                             <div class="flex gap-4 group">
                                 {{-- Avatar Inisial --}}
@@ -136,19 +136,33 @@
                                     {{ substr($k->nama_user, 0, 1) }}
                                 </div>
 
-                                <div class="flex-1">
-                                    <div class="flex justify-between items-start mb-1">
-                                        <div>
+                                {{-- Wrapper Konten --}}
+                                <div class="flex-1 min-w-0"> {{-- min-w-0 PENTING --}}
+
+                                    {{-- Header: Nama & Tombol --}}
+                                    <div class="flex justify-between items-center mb-1 gap-2">
+
+                                        {{-- BAGIAN KIRI: Nama & Waktu --}}
+                                        {{-- flex-1 & min-w-0 agar bagian ini mengisi ruang sisa tapi bisa mengecil --}}
+                                        <div class="flex items-center gap-2 flex-1 min-w-0">
+
+                                            {{-- 1. NAMA USER (TRUNCATE DISINI) --}}
+                                            <div class="font-bold text-gray-900 text-sm uppercase truncate">
+                                                {{ $k->nama_user }}
+                                            </div>
+
+                                            {{-- 2. WAKTU (Whitespace-nowrap agar waktu tidak hancur/turun) --}}
                                             <span
-                                                class="font-bold text-gray-900 text-sm uppercase mr-2">{{ $k->nama_user }}</span>
-                                            <span
-                                                class="text-[10px] font-bold text-gray-400 uppercase">{{ \Carbon\Carbon::parse($k->created_at)->diffForHumans() }}</span>
+                                                class="text-[10px] font-bold text-gray-400 uppercase whitespace-nowrap flex-shrink-0">
+                                                {{ \Carbon\Carbon::parse($k->created_at)->diffForHumans() }}
+                                            </span>
                                         </div>
 
-                                        {{-- Aksi Komentar --}}
+                                        {{-- BAGIAN KANAN: Tombol Aksi --}}
+                                        {{-- flex-shrink-0 agar tombol TIDAK PERNAH hilang/mengecil --}}
                                         @if (Auth::user()->role == 'admin' || $k->user_id == Auth::id())
                                             <div
-                                                class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                class="flex-shrink-0 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity ml-2">
                                                 @if ($k->user_id == Auth::id())
                                                     <a href="{{ route('berita.comment.edit', $k->id) }}"
                                                         class="text-[10px] font-bold text-blue-600 hover:underline uppercase">Edit</a>
@@ -164,6 +178,7 @@
                                         @endif
                                     </div>
 
+                                    {{-- Isi Komentar --}}
                                     <p
                                         class="text-gray-700 text-sm leading-relaxed whitespace-pre-line break-words bg-white p-3 border border-gray-200">
                                         {{ $k->isi_komentar }}
@@ -172,6 +187,7 @@
                             </div>
                         @endforeach
                     </div>
+
                 </div>
 
             </div>

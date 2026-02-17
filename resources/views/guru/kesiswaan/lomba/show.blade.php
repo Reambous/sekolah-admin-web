@@ -36,7 +36,7 @@
 
                     {{-- Meta Data Bar --}}
                     <div
-                        class="flex flex-wrap items-center gap-4 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                        class="flex flex-wrap items-center gap-4 text-xs font-bold text-gray-500 uppercase tracking-wide truncate">
                         <span class="flex items-center gap-1">
                             <span class="text-blue-700">👤</span> Pelapor: {{ $lomba->nama_guru }}
                         </span>
@@ -77,7 +77,7 @@
                                             {{ $p->nama_siswa }}
                                         </td>
                                         <td
-                                            class="p-3 text-sm text-center font-medium text-blue-700 align-top uppercase">
+                                            class="p-3 text-sm text-center font-medium text-blue-700 align-top uppercase break-words">
                                             {{ $p->kelas }}
                                         </td>
                                     </tr>

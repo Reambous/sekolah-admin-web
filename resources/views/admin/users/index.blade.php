@@ -27,7 +27,7 @@
     <div class="py-8 bg-white min-h-screen font-sans text-gray-900">
         <div class="max-w-[95%] mx-auto">
 
-            {{-- JUDUL HALAMAN (GAYA PORTAL) --}}
+            {{-- JUDUL HALAMAN --}}
             <div
                 class="border-b-4 border-gray-900 mb-8 pb-4 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
@@ -66,44 +66,54 @@
             <div id="tampilan-hp" class="space-y-4">
                 @foreach ($users as $user)
                     <div
-                        class="bg-white border-2 border-gray-100 p-5 shadow-sm relative group hover:border-blue-200 transition">
+                        class="bg-white border-2 border-gray-100 p-5 shadow-sm relative group hover:border-blue-200 transition rounded-lg">
 
                         {{-- Header Kartu (Nama & Role) --}}
-                        <div class="flex justify-between items-start mb-3 border-b border-gray-100 pb-2">
-                            <div class="flex flex-col">
-                                <span class="text-lg font-black text-gray-900 leading-tight">
+                        {{-- PERBAIKAN DISINI: gap-3 agar ada jarak, items-start agar sejajar atas --}}
+                        <div class="flex justify-between items-start gap-3 mb-3 border-b border-gray-100 pb-3">
+
+                            {{-- Kiri: Nama & Tanggal --}}
+                            {{-- flex-1: Ambil sisa ruang, min-w-0: Agar text truncate/wrap berfungsi di dalam flex --}}
+                            <div class="flex-1 min-w-0">
+                                {{-- break-words: Paksa turun baris jika kepanjangan --}}
+                                <h3 class="text-lg font-black text-gray-900 leading-tight truncate">
                                     {{ $user->name }}
-                                </span>
-                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wide mt-1">
+                                </h3>
+                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wide mt-1">
                                     Bergabung: {{ $user->created_at->format('d M Y') }}
-                                </span>
+                                </div>
                             </div>
 
-                            @if ($user->role == 'admin')
-                                <span
-                                    class="px-2 py-1 text-[10px] font-bold uppercase tracking-wide border bg-purple-50 text-purple-700 border-purple-200">
-                                    ADMIN
-                                </span>
-                            @else
-                                <span
-                                    class="px-2 py-1 text-[10px] font-bold uppercase tracking-wide border bg-blue-50 text-blue-700 border-blue-200">
-                                    GURU/STAF
-                                </span>
-                            @endif
+                            {{-- Kanan: Role Badge --}}
+                            {{-- flex-shrink-0: JANGAN MENGECIL walaupun nama panjang --}}
+                            <div class="flex-shrink-0">
+                                @if ($user->role == 'admin')
+                                    <span
+                                        class="px-2 py-1 text-[10px] font-bold uppercase tracking-wide border bg-purple-50 text-purple-700 border-purple-200 rounded">
+                                        ADMIN
+                                    </span>
+                                @else
+                                    <span
+                                        class="px-2 py-1 text-[10px] font-bold uppercase tracking-wide border bg-blue-50 text-blue-700 border-blue-200 rounded">
+                                        GURU/STAF
+                                    </span>
+                                @endif
+                            </div>
                         </div>
 
                         {{-- Isi Kartu (Email) --}}
                         <div class="mb-4">
                             <div
-                                class="flex items-center gap-2 text-sm text-gray-600 font-medium bg-gray-50 p-2 border border-gray-100">
-                                <span class="text-xs">✉️</span> {{ $user->email }}
+                                class="flex items-center gap-2 text-sm text-gray-600 font-medium bg-gray-50 p-2 border border-gray-100 rounded">
+                                <span class="text-xs">✉️</span>
+                                <span class="truncate">{{ $user->email }}</span>
                             </div>
                         </div>
 
                         {{-- Action Buttons --}}
                         <div class="flex gap-2 pt-2">
                             <a href="{{ route('users.edit', $user->id) }}"
-                                class="flex-1 text-center text-xs bg-gray-900 text-white px-3 py-2 font-bold uppercase tracking-wider hover:bg-blue-700 transition">
+                                class="flex-1 text-center text-xs bg-gray-900 text-white px-3 py-2 font-bold uppercase tracking-wider hover:bg-blue-700 transition rounded">
                                 Edit / Reset
                             </a>
 
@@ -112,13 +122,13 @@
                                     onsubmit="return confirm('Hapus akun ini selamanya?')">
                                     @csrf @method('DELETE')
                                     <button type="submit"
-                                        class="w-full text-center text-xs bg-red-600 text-white px-3 py-2 font-bold uppercase tracking-wider hover:bg-red-700 transition">
+                                        class="w-full text-center text-xs bg-red-600 text-white px-3 py-2 font-bold uppercase tracking-wider hover:bg-red-700 transition rounded">
                                         Hapus
                                     </button>
                                 </form>
                             @else
                                 <div
-                                    class="flex-1 text-center text-[10px] font-bold text-gray-400 bg-gray-100 px-3 py-2 border border-gray-200 uppercase cursor-not-allowed">
+                                    class="flex-1 text-center text-[10px] font-bold text-gray-400 bg-gray-100 px-3 py-2 border border-gray-200 uppercase cursor-not-allowed rounded">
                                     Akun Anda
                                 </div>
                             @endif
@@ -128,7 +138,7 @@
             </div>
 
             {{-- 2. TAMPILAN LAPTOP (DESKTOP) --}}
-            <div id="tampilan-laptop" class="overflow-hidden border border-gray-200 shadow-sm">
+            <div id="tampilan-laptop" class="overflow-hidden border border-gray-200 shadow-sm rounded-lg">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-900 text-white">
                         <tr>
@@ -149,7 +159,7 @@
                             <tr class="hover:bg-blue-50 transition duration-150 group">
 
                                 {{-- Nama --}}
-                                <td class="px-6 py-4 whitespace-nowrap align-middle ">
+                                <td class="px-6 py-4 whitespace-nowrap align-middle">
                                     <div class="text-sm font-bold text-gray-900 truncate max-w-lg">
                                         {{ $user->name }}
                                     </div>
@@ -171,12 +181,12 @@
                                 <td class="px-6 py-4 align-middle text-center">
                                     @if ($user->role == 'admin')
                                         <span
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-none border border-purple-200 bg-purple-50 text-[10px] font-bold text-purple-700 uppercase tracking-wide">
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded border border-purple-200 bg-purple-50 text-[10px] font-bold text-purple-700 uppercase tracking-wide">
                                             Administrator
                                         </span>
                                     @else
                                         <span
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-none border border-blue-200 bg-blue-50 text-[10px] font-bold text-blue-700 uppercase tracking-wide">
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded border border-blue-200 bg-blue-50 text-[10px] font-bold text-blue-700 uppercase tracking-wide">
                                             Guru / Staf
                                         </span>
                                     @endif

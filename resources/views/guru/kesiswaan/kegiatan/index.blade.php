@@ -102,13 +102,13 @@
                         </div>
 
                         <div class="mb-4">
-                            <h4 class="text-lg font-black text-gray-900 leading-tight mb-1">
+                            <h4 class="text-lg font-black text-gray-900 leading-tight mb-1 truncate">
                                 {{ $item->nama_kegiatan }}
                             </h4>
-                            <div class="text-xs font-bold text-gray-500 uppercase mb-3">
+                            <div class="text-xs font-bold text-gray-500 uppercase mb-3 truncate">
                                 Oleh: <span class="text-black">{{ $item->nama_guru }}</span>
                             </div>
-                            <p class="text-gray-600 text-sm italic bg-gray-50 p-3 border-l-2 border-gray-300">
+                            <p class="text-gray-600 text-sm italic bg-gray-50 p-3 border-l-2 border-gray-300 truncate">
                                 "{{ $item->refleksi ?? ($item->keterangan ?? '-') }}"
                             </p>
                         </div>
