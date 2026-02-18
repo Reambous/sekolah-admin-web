@@ -101,4 +101,12 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('users.index')->with('success', 'Akun berhasil dihapus.');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin') abort(403);
+        $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:users,id']);
+        \Illuminate\Support\Facades\DB::table('users')->whereIn('id', $request->ids)->delete();
+        return back()->with('success', 'User terpilih dihapus.');
+    }
 }

@@ -78,6 +78,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // --- IJIN ---
     Route::post('/ijin/bulk-delete', [IjinController::class, 'bulkDestroy'])->name('ijin.bulk_delete');
+
+    Route::post('/users/bulk-delete', [UserController::class, 'bulkDestroy'])->name('users.bulk_delete');
     // Route Kegiatan Kesiswaan
     Route::get('/kesiswaan/kegiatan', [KesiswaanKegiatanController::class, 'index'])->name('kesiswaan.kegiatan.index');
     Route::get('/kesiswaan/kegiatan/create', [KesiswaanKegiatanController::class, 'create'])->name('kesiswaan.kegiatan.create');

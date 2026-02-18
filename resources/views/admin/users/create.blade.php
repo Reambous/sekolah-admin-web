@@ -59,7 +59,7 @@
                         </label>
                         <input type="email" name="email" value="{{ old('email') }}" required
                             class="w-full bg-gray-50 border-2 border-gray-200 text-gray-900 text-sm font-medium focus:bg-white focus:border-blue-900 focus:ring-0 transition-colors rounded-none px-4 py-3 placeholder-gray-400"
-                            placeholder="nama@sekolah.sch.id">
+                            placeholder="nama@gmail.com">
                     </div>
 
                     {{-- Role --}}
