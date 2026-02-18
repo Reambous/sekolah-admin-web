@@ -12,7 +12,7 @@
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}"
                         class="font-bold text-xl text-gray-900 tracking-widest uppercase hover:text-gray-700 transition">
-                        RUSMAN.ID
+                        KAK ROZ
                     </a>
                 </div>
 

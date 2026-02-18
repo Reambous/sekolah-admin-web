@@ -54,12 +54,13 @@
                             class="bg-green-700 text-white px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-green-800 transition shadow-sm flex items-center gap-2">
                             <span>📥</span> Export Excel
                         </a>
+                        <a href="{{ route('berita.create') }}"
+                            class="bg-gray-900 text-white px-5 py-2 text-xs font-bold uppercase tracking-wider hover:bg-yellow-500 hover:text-black transition shadow-lg transform hover:-translate-y-0.5">
+                            + Tulis Berita
+                        </a>
                     @endif
 
-                    <a href="{{ route('berita.create') }}"
-                        class="bg-gray-900 text-white px-5 py-2 text-xs font-bold uppercase tracking-wider hover:bg-yellow-500 hover:text-black transition shadow-lg transform hover:-translate-y-0.5">
-                        + Tulis Berita
-                    </a>
+
                 </div>
             </div>
 

@@ -87,7 +87,11 @@ class BeritaController extends Controller
             ->select('berita.*', 'users.name as penulis')
             ->where('berita.id', $id)->first();
 
-        if (!$berita) abort(404);
+        if (!$berita) {
+            // 3. Jika KOSONG (sudah dihapus), lempar ke Dashboard dengan pesan error
+            return redirect()->route('dashboard')
+                ->with('error', 'Maaf, link kegiatan tersebut sudah tidak tersedia atau telah dihapus.');
+        }
 
         $komentar = DB::table('berita_komentar')
             ->join('users', 'berita_komentar.user_id', '=', 'users.id')

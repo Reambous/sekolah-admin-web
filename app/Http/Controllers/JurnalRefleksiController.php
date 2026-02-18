@@ -62,7 +62,11 @@ class JurnalRefleksiController extends Controller
             ->where('jurnal_refleksi.id', $id)
             ->first();
 
-        if (!$jurnal) abort(404);
+        if (!$jurnal) {
+            // 3. Jika KOSONG (sudah dihapus), lempar ke Dashboard dengan pesan error
+            return redirect()->route('dashboard')
+                ->with('error', 'Maaf, link kegiatan tersebut sudah tidak tersedia atau telah dihapus.');
+        }
 
         return view('guru.jurnal.show', compact('jurnal'));
     }

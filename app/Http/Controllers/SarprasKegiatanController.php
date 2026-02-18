@@ -46,7 +46,11 @@ class SarprasKegiatanController extends Controller
             ->join('users', 'sarpras_kegiatan.user_id', '=', 'users.id')
             ->select('sarpras_kegiatan.*', 'users.name as nama_guru')
             ->where('sarpras_kegiatan.id', $id)->first();
-        if (!$kegiatan) abort(404);
+        if (!$kegiatan) {
+            // 3. Jika KOSONG (sudah dihapus), lempar ke Dashboard dengan pesan error
+            return redirect()->route('dashboard')
+                ->with('error', 'Maaf, link kegiatan tersebut sudah tidak tersedia atau telah dihapus.');
+        }
         return view('guru.sarpras.kegiatan.show', compact('kegiatan'));
     }
 

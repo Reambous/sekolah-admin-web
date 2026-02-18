@@ -56,7 +56,11 @@ class HumasKegiatanController extends Controller
             ->join('users', 'humas_kegiatan.user_id', '=', 'users.id')
             ->select('humas_kegiatan.*', 'users.name as nama_guru')
             ->where('humas_kegiatan.id', $id)->first();
-        if (!$kegiatan) abort(404);
+        if (!$kegiatan) {
+            // 3. Jika KOSONG (sudah dihapus), lempar ke Dashboard dengan pesan error
+            return redirect()->route('dashboard')
+                ->with('error', 'Maaf, link kegiatan tersebut sudah tidak tersedia atau telah dihapus.');
+        }
         return view('guru.humas.kegiatan.show', compact('kegiatan'));
     }
 

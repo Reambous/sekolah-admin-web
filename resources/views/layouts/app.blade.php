@@ -29,7 +29,7 @@
                 </div>
             </header>
         @endif --}}
-        <h3 class="text-center text-xl font-bold text-gray-800 py-4">SELAMAT DATANG DI PORTAL SEKOLAH</h3>
+        <h3 class="text-center text-xl font-bold text-gray-800 py-4"> PORTAL SEKOLAH</h3>
 
         {{-- Konten Utama --}}
         <main>

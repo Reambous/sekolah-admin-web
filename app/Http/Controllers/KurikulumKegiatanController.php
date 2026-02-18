@@ -45,7 +45,11 @@ class KurikulumKegiatanController extends Controller
             ->join('users', 'kurikulum_kegiatan.user_id', '=', 'users.id')
             ->select('kurikulum_kegiatan.*', 'users.name as nama_guru')
             ->where('kurikulum_kegiatan.id', $id)->first();
-        if (!$kegiatan) abort(404);
+        if (!$kegiatan) {
+            // 3. Jika KOSONG (sudah dihapus), lempar ke Dashboard dengan pesan error
+            return redirect()->route('dashboard')
+                ->with('error', 'Maaf, link kegiatan tersebut sudah tidak tersedia atau telah dihapus.');
+        }
         return view('guru.kurikulum.kegiatan.show', compact('kegiatan'));
     }
 

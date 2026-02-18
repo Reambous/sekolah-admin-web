@@ -127,7 +127,11 @@ class IjinController extends Controller
             ->where('ijin.id', $id)
             ->first();
 
-        if (!$ijin) abort(404);
+        if (!$ijin) {
+            // 3. Jika KOSONG (sudah dihapus), lempar ke Dashboard dengan pesan error
+            return redirect()->route('dashboard')
+                ->with('error', 'Maaf, link kegiatan tersebut sudah tidak tersedia atau telah dihapus.');
+        }
 
         // LOGIKA HAK AKSES BARU:
         // Boleh lihat jika: 

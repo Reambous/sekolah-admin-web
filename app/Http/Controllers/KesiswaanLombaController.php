@@ -78,7 +78,11 @@ class KesiswaanLombaController extends Controller
             ->select('kesiswaan_lomba.*', 'users.name as nama_guru')
             ->where('kesiswaan_lomba.id', $id)->first();
 
-        if (!$lomba) abort(404);
+        if (!$lomba) {
+            // 3. Jika KOSONG (sudah dihapus), lempar ke Dashboard dengan pesan error
+            return redirect()->route('dashboard')
+                ->with('error', 'Maaf, link kegiatan tersebut sudah tidak tersedia atau telah dihapus.');
+        }
         $peserta = DB::table('kesiswaan_lomba_peserta')->where('kesiswaan_lomba_id', $id)->get();
 
         return view('guru.kesiswaan.lomba.show', compact('lomba', 'peserta'));

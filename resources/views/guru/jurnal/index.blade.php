@@ -157,7 +157,7 @@
                             </th>
                             <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-widest w-48">Penulis
                             </th>
-                            <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-widest w-40">Kategori
+                            <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-widest w-40">Topik
                             </th>
                             <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-widest">Judul &
                                 Ringkasan</th>

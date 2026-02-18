@@ -52,7 +52,13 @@ class KesiswaanKegiatanController extends Controller
             ->select('kesiswaan_kegiatan.*', 'users.name as nama_guru')
             ->where('kesiswaan_kegiatan.id', $id)->first();
 
-        if (!$kegiatan) abort(404);
+        if (!$kegiatan) {
+            // 3. Jika KOSONG (sudah dihapus), lempar ke Dashboard dengan pesan error
+            return redirect()->route('dashboard')
+                ->with('error', 'Maaf, link kegiatan tersebut sudah tidak tersedia atau telah dihapus.');
+        }
+
+        // 4. Jika ADA, tampilkan view seperti biasa
         return view('guru.kesiswaan.kegiatan.show', compact('kegiatan'));
     }
 

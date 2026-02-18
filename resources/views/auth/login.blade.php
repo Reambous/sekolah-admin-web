@@ -74,7 +74,7 @@
                         </label>
                         <input type="email" name="email" value="{{ old('email') }}" required autofocus
                             class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 text-gray-900 text-sm font-medium focus:bg-white focus:border-blue-900 focus:ring-0 transition-colors rounded-none placeholder-gray-400"
-                            placeholder="nama@sekolah.sch.id">
+                            placeholder="nama@gmail.com">
                         @error('email')
                             <p class="text-red-600 text-xs font-bold mt-1 uppercase">{{ $message }}</p>
                         @enderror
