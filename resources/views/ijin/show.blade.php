@@ -50,20 +50,27 @@
                 </div>
 
                 {{-- 2. INFORMASI DETAIL (GRID) --}}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-                    {{-- Kolom Kiri: Tanggal Ijin --}}
+                {{-- 2. INFORMASI DETAIL (GRID WAKTU) --}}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    {{-- Kolom 1: Tanggal --}}
                     <div class="bg-gray-50 p-5 border-l-4 border-blue-900">
-                        <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Mulai Tanggal</h4>
+                        <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Tanggal Ijin</h4>
                         <p class="text-lg font-bold text-gray-900">
-                            {{ \Carbon\Carbon::parse($ijin->mulai)->translatedFormat('d F Y') }}
+                            {{ \Carbon\Carbon::parse($ijin->tanggal)->translatedFormat('d F Y') }}
                         </p>
                     </div>
 
-                    {{-- Kolom Kanan: Sampai Tanggal --}}
-                    <div class="bg-gray-50 p-5 border-l-4 border-blue-900">
-                        <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Sampai Tanggal</h4>
+                    {{-- Kolom 2: Jam Mulai --}}
+                    {{-- Kolom 2: Waktu Ijin --}}
+                    <div class="bg-gray-50 p-5 border-l-4 border-yellow-400">
+                        <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Waktu Ijin</h4>
                         <p class="text-lg font-bold text-gray-900">
-                            {{ \Carbon\Carbon::parse($ijin->selesai)->translatedFormat('d F Y') }}
+                            @if ($ijin->jam_mulai && $ijin->jam_selesai)
+                                {{ \Carbon\Carbon::parse($ijin->jam_mulai)->format('H:i') }} -
+                                {{ \Carbon\Carbon::parse($ijin->jam_selesai)->format('H:i') }} WIB
+                            @else
+                                <span class="text-red-600 font-black tracking-widest">1 HARI PENUH</span>
+                            @endif
                         </p>
                     </div>
                 </div>

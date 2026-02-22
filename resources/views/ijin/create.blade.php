@@ -39,25 +39,41 @@
                     @csrf
 
                     {{-- Grid Tanggal --}}
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    {{-- Grid Waktu (Tanggal & Jam) --}}
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <div>
                             <label class="block text-xs font-black text-gray-900 uppercase tracking-widest mb-2">
-                                Mulai Tanggal
+                                Tanggal Ijin
                             </label>
-                            <input type="date" name="mulai" value="{{ old('mulai') }}"
+                            <input type="date" name="tanggal" value="{{ old('tanggal') }}" required
                                 class="w-full bg-gray-50 border-2 border-gray-200 text-gray-900 text-sm font-medium focus:bg-white focus:border-blue-900 focus:ring-0 transition-colors rounded-none px-4 py-3">
-                            @error('mulai')
+                            @error('tanggal')
                                 <p class="text-red-600 text-[10px] font-bold mt-1 uppercase tracking-wide">
                                     {{ $message }}</p>
                             @enderror
                         </div>
                         <div>
                             <label class="block text-xs font-black text-gray-900 uppercase tracking-widest mb-2">
-                                Sampai Tanggal
+                                Jam Keluar (Opsional)
                             </label>
-                            <input type="date" name="selesai" value="{{ old('selesai') }}"
+                            <input type="time" name="jam_mulai"
+                                value="{{ old('jam_mulai', $ijin->jam_mulai ?? '') }}"
                                 class="w-full bg-gray-50 border-2 border-gray-200 text-gray-900 text-sm font-medium focus:bg-white focus:border-blue-900 focus:ring-0 transition-colors rounded-none px-4 py-3">
-                            @error('selesai')
+                            <p class="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-wide">* Kosongkan jika
+                                ijin 1 hari penuh</p>
+                            @error('jam_mulai')
+                                <p class="text-red-600 text-[10px] font-bold mt-1 uppercase tracking-wide">
+                                    {{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-xs font-black text-gray-900 uppercase tracking-widest mb-2">
+                                Jam Kembali (Opsional)
+                            </label>
+                            <input type="time" name="jam_selesai"
+                                value="{{ old('jam_selesai', $ijin->jam_selesai ?? '') }}"
+                                class="w-full bg-gray-50 border-2 border-gray-200 text-gray-900 text-sm font-medium focus:bg-white focus:border-blue-900 focus:ring-0 transition-colors rounded-none px-4 py-3">
+                            @error('jam_selesai')
                                 <p class="text-red-600 text-[10px] font-bold mt-1 uppercase tracking-wide animate-pulse">
                                     {{ $message }}</p>
                             @enderror

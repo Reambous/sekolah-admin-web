@@ -44,36 +44,36 @@ class IjinController extends Controller
     // 3. STORE (Simpan Pengajuan)
     public function store(Request $request)
     {
-        // VALIDASI
+        // 1. Validasi Input (Tanggal & Jam)
         $request->validate([
-            'mulai' => 'required|date',
-            // VALIDASI PENTING: Tanggal selesai harus SETELAH atau SAMA dengan tanggal mulai
-            'selesai' => 'required|date|after_or_equal:mulai',
-            'alasan' => 'required|string',
-            // UPDATE: Izinkan file dokumen
-            'bukti_foto' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
+            'tanggal'     => 'required|date',
+            'jam_mulai'   => 'nullable|date_format:H:i',
+            'jam_selesai' => 'nullable|date_format:H:i|after:jam_mulai', // Jam selesai harus setelah jam mulai
+            'alasan'      => 'required|string',
+            'bukti_foto'  => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
         ], [
-            // PESAN ERROR CUSTOM
-            'selesai.after_or_equal' => 'Tanggal selesai tidak boleh sebelum tanggal mulai! Harap cek kembali tanggal anda.',
-            'alasan.required' => 'Keterangan/Alasan wajib diisi.',
-            'bukti_foto.mimes' => 'File harus berupa Foto (JPG/PNG) atau Dokumen (PDF/Word).',
+            'jam_selesai.after' => 'Jam selesai/kembali tidak boleh sebelum atau sama dengan jam keluar!',
+            'alasan.required'   => 'Keterangan/Alasan wajib diisi.',
+            'bukti_foto.mimes'  => 'File harus berupa Foto (JPG/PNG) atau Dokumen (PDF/Word).',
         ]);
 
+        // 2. Upload File (Jika ada)
         $path = null;
         if ($request->hasFile('bukti_foto')) {
             $path = $request->file('bukti_foto')->store('bukti_ijin', 'public');
         }
 
+        // 3. Simpan ke Database
         DB::table('ijin')->insert([
-            'user_id' => Auth::id(),
-            // 'jenis_ijin' => DIHAPUS,
-            'mulai' => $request->mulai,
-            'selesai' => $request->selesai,
-            'alasan' => $request->alasan,
-            'bukti_foto' => $path,
-            'status' => 'pending',
-            'created_at' => now(),
-            'updated_at' => now()
+            'user_id'     => Auth::id(),
+            'tanggal'     => $request->tanggal,
+            'jam_mulai'   => $request->jam_mulai,
+            'jam_selesai' => $request->jam_selesai,
+            'alasan'      => $request->alasan,
+            'bukti_foto'  => $path,
+            'status'      => 'pending',
+            'created_at'  => now(),
+            'updated_at'  => now()
         ]);
 
         return redirect()->route('ijin.index')->with('success', 'Pengajuan ijin berhasil dikirim.');
@@ -171,34 +171,38 @@ class IjinController extends Controller
     {
         $ijin = DB::table('ijin')->where('id', $id)->first();
 
-        // Validasi Keamanan
+        // 1. Validasi Keamanan (Hanya pemilik & masih pending)
         if ($ijin->user_id !== Auth::id()) abort(403);
         if ($ijin->status !== 'pending') abort(403, 'Sudah diproses tidak bisa edit');
 
+        // 2. Validasi Input (Tanggal & Jam)
         $request->validate([
-            'mulai' => 'required|date',
-            'selesai' => 'required|date|after_or_equal:mulai',
-            'alasan' => 'required|string',
-            // PERBAIKAN DI SINI: Validasi Update harus sama dengan Store (Bisa PDF/Word)
-            'bukti_foto' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
+            'tanggal'     => 'required|date',
+            'jam_mulai'   => 'nullable|date_format:H:i',
+            'jam_selesai' => 'nullable|date_format:H:i|after:jam_mulai',
+            'alasan'      => 'required|string',
+            'bukti_foto'  => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
         ], [
-            'selesai.after_or_equal' => 'Tanggal selesai salah! Tidak boleh sebelum tanggal mulai.',
-            'bukti_foto.mimes' => 'File harus berupa Foto (JPG/PNG) atau Dokumen (PDF/Word).',
+            'jam_selesai.after' => 'Jam selesai salah! Tidak boleh sebelum jam keluar.',
+            'alasan.required'   => 'Keterangan/Alasan wajib diisi.',
+            'bukti_foto.mimes'  => 'File harus berupa Foto (JPG/PNG) atau Dokumen (PDF/Word).',
         ]);
 
-        // Logic Foto
+        // 3. Logic Ganti Foto/File
         $path = $ijin->bukti_foto;
         if ($request->hasFile('bukti_foto')) {
             if ($ijin->bukti_foto) Storage::disk('public')->delete($ijin->bukti_foto);
             $path = $request->file('bukti_foto')->store('bukti_ijin', 'public');
         }
 
+        // 4. Update Database
         DB::table('ijin')->where('id', $id)->update([
-            'mulai' => $request->mulai,
-            'selesai' => $request->selesai,
-            'alasan' => $request->alasan,
-            'bukti_foto' => $path,
-            'updated_at' => now()
+            'tanggal'     => $request->tanggal,
+            'jam_mulai'   => $request->jam_mulai,
+            'jam_selesai' => $request->jam_selesai,
+            'alasan'      => $request->alasan,
+            'bukti_foto'  => $path,
+            'updated_at'  => now()
         ]);
 
         return redirect()->route('ijin.show', $id)->with('success', 'Data pengajuan berhasil diperbarui.');

@@ -91,14 +91,15 @@
                         <div class="flex justify-between items-start mb-3 border-b border-gray-100 pb-2">
                             <div>
                                 <div class="text-xs font-black text-blue-700 uppercase tracking-wide">
-                                    {{ \Carbon\Carbon::parse($item->mulai)->translatedFormat('d M Y') }}
-                                    @if ($item->mulai != $item->selesai)
-                                        <span class="text-gray-400 font-normal"> s.d </span>
-                                        {{ \Carbon\Carbon::parse($item->selesai)->translatedFormat('d M Y') }}
-                                    @endif
+                                    {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}
                                 </div>
-                                <div class="text-[10px] text-gray-400 font-bold uppercase">
-                                    Diajukan: {{ \Carbon\Carbon::parse($item->created_at)->format('H:i') }} WIB
+                                <div class="text-[10px] text-gray-500 font-bold uppercase mt-1">
+                                    @if ($item->jam_mulai && $item->jam_selesai)
+                                        🕒 {{ \Carbon\Carbon::parse($item->jam_mulai)->format('H:i') }} -
+                                        {{ \Carbon\Carbon::parse($item->jam_selesai)->format('H:i') }} WIB
+                                    @else
+                                        🕒 1 HARI PENUH
+                                    @endif
                                 </div>
                             </div>
 
@@ -218,17 +219,24 @@
                                 @endif
 
                                 {{-- Tanggal --}}
+
                                 <td class="px-6 py-4 whitespace-nowrap align-top">
                                     <div class="text-sm font-bold text-gray-900">
-                                        {{ \Carbon\Carbon::parse($item->mulai)->translatedFormat('d M Y') }}
+                                        {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}
                                     </div>
-                                    @if ($item->mulai != $item->selesai)
-                                        <div class="text-[10px] text-gray-500 font-bold uppercase mt-1">
-                                            s.d {{ \Carbon\Carbon::parse($item->selesai)->translatedFormat('d M Y') }}
+                                    @if ($item->jam_mulai && $item->jam_selesai)
+                                        <div
+                                            class="text-xs text-blue-600 font-bold uppercase mt-1 bg-blue-50 inline-block px-2 py-1 border border-blue-200">
+                                            {{ \Carbon\Carbon::parse($item->jam_mulai)->format('H:i') }} -
+                                            {{ \Carbon\Carbon::parse($item->jam_selesai)->format('H:i') }}
+                                        </div>
+                                    @else
+                                        <div
+                                            class="text-[10px] text-red-600 font-black uppercase mt-1 bg-red-50 inline-block px-2 py-1 border border-red-200 tracking-widest">
+                                            1 HARI PENUH
                                         </div>
                                     @endif
                                 </td>
-
                                 {{-- Guru --}}
                                 <td class="px-6 py-4 align-top ">
                                     <div class="text-sm font-bold  text-blue-700 uppercase truncate max-w-xs">
