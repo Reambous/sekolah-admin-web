@@ -82,7 +82,7 @@
                         Keterangan / Alasan
                     </h3>
                     <div
-                        class="bg-white p-0 border-0 text-gray-800 text-base md:text-lg leading-relaxed whitespace-pre-line text-justify font-serif break-words">
+                        class="bg-gray-50 p-6 border border-gray-200 text-gray-800 text-base md:text-lg leading-relaxed whitespace-pre-line text-justify font-serif break-words">
                         {{ $ijin->alasan }}
                     </div>
                 </div>
