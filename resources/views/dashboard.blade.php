@@ -74,7 +74,7 @@
             </div>
 
 
-            <div class="text-center pl-28 pr-28 pb-8">Dashboard Guru SD Negeri 1 [Nama Kota]. Platform ini
+            <div class="text-center pl-28 pr-28 pb-8">Dashboard . Platform ini
                 dirancang
                 untuk mempermudah
                 administrasi agar Bapak/Ibu bisa lebih fokus pada hal yang paling penting: Mengajar. Jangan lupa untuk

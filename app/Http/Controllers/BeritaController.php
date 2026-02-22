@@ -42,12 +42,23 @@ class BeritaController extends Controller
     {
         if (Auth::user()->role !== 'admin') abort(403);
 
-        $request->validate([
-            'judul' => 'required|string|max:255',
-            'isi' => 'nullable|string',
-            'gambar' => 'nullable|image|max:2048',
-            'lampiran' => 'nullable|mimes:pdf,doc,docx|max:5120',
-        ]);
+        $request->validate(
+            [
+                'judul' => 'required|string|max:255',
+                'isi' => 'nullable|string',
+                'gambar' => 'nullable|image|max:2048',
+                'lampiran' => 'nullable|mimes:pdf,doc,docx|max:5120',
+            ],
+            [
+                // Kumpulan Pesan Error Custom (Bahasa Indonesia)
+                'judul.required' => 'Judul berita wajib diisi!',
+                'gambar.image'   => 'File sampul harus berupa gambar!',
+                'gambar.mimes'   => 'Format gambar harus JPG, JPEG, atau PNG!',
+                'gambar.max'     => 'Ukuran gambar maksimal 2MB!',
+                'lampiran.mimes' => 'Format lampiran harus berupa PDF atau Word (DOC/DOCX)!',
+                'lampiran.max'   => 'Ukuran dokumen lampiran maksimal 5MB!',
+            ]
+        );
 
         // 1. Gambar
         $gambarPath = null;
@@ -117,12 +128,22 @@ class BeritaController extends Controller
 
         $berita = DB::table('berita')->where('id', $id)->first();
 
-        $request->validate([
-            'judul' => 'required|string|max:255',
-            'isi' => 'nullable|string',
-            'gambar' => 'nullable|image|max:2048',
-            'lampiran' => 'nullable|mimes:pdf,doc,docx|max:5120',
-        ]);
+        $request->validate(
+            [
+                'judul' => 'required|string|max:255',
+                'isi' => 'nullable|string',
+                'gambar' => 'nullable|image|max:2048',
+                'lampiran' => 'nullable|mimes:pdf,doc,docx|max:5120',
+            ],
+            [
+                'judul.required' => 'Judul berita wajib diisi!',
+                'gambar.image'   => 'File sampul harus berupa gambar!',
+                'gambar.mimes'   => 'Format gambar harus JPG, JPEG, atau PNG!',
+                'gambar.max'     => 'Ukuran gambar maksimal 2MB!',
+                'lampiran.mimes' => 'Format lampiran harus berupa PDF atau Word (DOC/DOCX)!',
+                'lampiran.max'   => 'Ukuran dokumen lampiran maksimal 5MB!',
+            ]
+        );
 
         // Logic Gambar
         $gambarPath = $berita->gambar;

@@ -72,8 +72,15 @@
                     </a>
 
                     {{-- Tombol Edit/Hapus --}}
+                    {{-- Tombol Edit/Hapus --}}
                     <div class="flex gap-3 w-full md:w-auto">
-                        @if (Auth::user()->role == 'admin' || $kegiatan->user_id == Auth::id())
+                        @php
+                            $isAdmin = Auth::user()->role == 'admin';
+                            $isOwner = $kegiatan->user_id == Auth::id();
+                            $isApproved = strtolower($kegiatan->status) == 'disetujui';
+                        @endphp
+
+                        @if ($isAdmin || ($isOwner && !$isApproved))
                             <a href="{{ route('humas.kegiatan.edit', $kegiatan->id) }}"
                                 class="flex-1 md:flex-none text-center bg-yellow-400 text-black px-5 py-2 text-xs font-black uppercase tracking-wider hover:bg-yellow-500 transition shadow-sm">
                                 Edit Data
@@ -88,6 +95,11 @@
                                     Hapus
                                 </button>
                             </form>
+                        @elseif ($isOwner && $isApproved)
+                            <div
+                                class="flex-1 md:flex-none flex items-center justify-center bg-green-50 text-green-700 border-2 border-green-200 px-5 py-2 text-[10px] font-black uppercase tracking-widest shadow-sm">
+                                ✓ Laporan Disetujui
+                            </div>
                         @endif
                     </div>
                 </div>
