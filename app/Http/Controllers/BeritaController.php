@@ -33,14 +33,18 @@ class BeritaController extends Controller
     // 2. CREATE (Admin Only)
     public function create()
     {
-        if (Auth::user()->role !== 'admin') abort(403);
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak! Halaman tersebut khusus untuk Admin.');
+        }
         return view('berita.create');
     }
 
     // 3. STORE (Simpan Baru)
     public function store(Request $request)
     {
-        if (Auth::user()->role !== 'admin') abort(403);
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak! Halaman tersebut khusus untuk Admin.');
+        }
 
         $request->validate(
             [
@@ -116,7 +120,9 @@ class BeritaController extends Controller
     // 5. EDIT BERITA (Baru - Admin Only)
     public function edit($id)
     {
-        if (Auth::user()->role !== 'admin') abort(403);
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak! Halaman tersebut khusus untuk Admin.');
+        }
         $berita = DB::table('berita')->where('id', $id)->first();
         return view('berita.edit', compact('berita'));
     }
@@ -124,7 +130,9 @@ class BeritaController extends Controller
     // 6. UPDATE BERITA
     public function update(Request $request, $id)
     {
-        if (Auth::user()->role !== 'admin') abort(403);
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak! Halaman tersebut khusus untuk Admin.');
+        }
 
         $berita = DB::table('berita')->where('id', $id)->first();
 
@@ -194,7 +202,9 @@ class BeritaController extends Controller
     // 7. HAPUS BERITA
     public function destroy($id)
     {
-        if (Auth::user()->role !== 'admin') abort(403);
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak! Halaman tersebut khusus untuk Admin.');
+        }
         $berita = DB::table('berita')->where('id', $id)->first();
 
         // Hapus file fisik

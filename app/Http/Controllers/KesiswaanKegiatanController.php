@@ -112,14 +112,18 @@ class KesiswaanKegiatanController extends Controller
 
     public function approve($id)
     {
-        if (Auth::user()->role !== 'admin') abort(403);
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak! Halaman tersebut khusus untuk Admin.');
+        }
         DB::table('kesiswaan_kegiatan')->where('id', $id)->update(['status' => 'disetujui']);
         return back()->with('success', 'Data disetujui.');
     }
 
     public function unapprove($id)
     {
-        if (Auth::user()->role !== 'admin') abort(403);
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak! Halaman tersebut khusus untuk Admin.');
+        }
         DB::table('kesiswaan_kegiatan')->where('id', $id)->update(['status' => 'pending']);
         return back()->with('success', 'Status dikembalikan ke Pending.');
     }

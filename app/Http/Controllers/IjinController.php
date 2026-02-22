@@ -82,7 +82,9 @@ class IjinController extends Controller
     // 4. APPROVE (Admin Only)
     public function approve($id)
     {
-        if (Auth::user()->role !== 'admin') abort(403);
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak! Halaman tersebut khusus untuk Admin.');
+        }
         DB::table('ijin')->where('id', $id)->update(['status' => 'disetujui', 'updated_at' => now()]);
         return back()->with('success', 'Ijin disetujui.');
     }
@@ -90,7 +92,9 @@ class IjinController extends Controller
     // 5. REJECT (Admin Only)
     public function reject($id)
     {
-        if (Auth::user()->role !== 'admin') abort(403);
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak! Halaman tersebut khusus untuk Admin.');
+        }
         DB::table('ijin')->where('id', $id)->update(['status' => 'ditolak', 'updated_at' => now()]);
         return back()->with('success', 'Ijin ditolak.');
     }

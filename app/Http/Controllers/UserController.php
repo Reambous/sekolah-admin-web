@@ -14,7 +14,9 @@ class UserController extends Controller
     public function index()
     {
         // Hanya Admin
-        if (Auth::user()->role !== 'admin') abort(403);
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak! Halaman tersebut khusus untuk Admin.');
+        }
 
         $users = User::orderBy('name', 'asc')->get();
         return view('admin.users.index', compact('users'));
@@ -23,14 +25,18 @@ class UserController extends Controller
     // 2. FORM TAMBAH USER
     public function create()
     {
-        if (Auth::user()->role !== 'admin') abort(403);
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak! Halaman tersebut khusus untuk Admin.');
+        }
         return view('admin.users.create');
     }
 
     // 3. SIMPAN USER BARU
     public function store(Request $request)
     {
-        if (Auth::user()->role !== 'admin') abort(403);
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak! Halaman tersebut khusus untuk Admin.');
+        }
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -52,7 +58,9 @@ class UserController extends Controller
     // 4. FORM EDIT
     public function edit($id)
     {
-        if (Auth::user()->role !== 'admin') abort(403);
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak! Halaman tersebut khusus untuk Admin.');
+        }
         $user = User::findOrFail($id);
         return view('admin.users.edit', compact('user'));
     }
@@ -60,7 +68,9 @@ class UserController extends Controller
     // 5. UPDATE USER (TERMASUK RESET PASSWORD)
     public function update(Request $request, $id)
     {
-        if (Auth::user()->role !== 'admin') abort(403);
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak! Halaman tersebut khusus untuk Admin.');
+        }
 
         $user = User::findOrFail($id);
 
@@ -89,7 +99,9 @@ class UserController extends Controller
     // 6. HAPUS USER
     public function destroy($id)
     {
-        if (Auth::user()->role !== 'admin') abort(403);
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak! Halaman tersebut khusus untuk Admin.');
+        }
 
         $user = User::findOrFail($id);
 
