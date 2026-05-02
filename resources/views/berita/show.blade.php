@@ -40,9 +40,26 @@
                     {{-- 2. GAMBAR UTAMA --}}
                     @if ($berita->gambar)
                         <div class="mb-8">
+                            {{-- Gambar yang bisa di-klik (ditambah cursor-pointer) --}}
                             <img src="{{ asset('storage/' . $berita->gambar) }}"
-                                class="w-full h-auto object-cover max-h-[400px] border border-gray-200 rounded-sm"
-                                alt="Gambar Berita">
+                                class="w-full h-auto object-cover max-h-[400px] border border-gray-200 rounded-sm cursor-pointer hover:opacity-90 transition-opacity"
+                                alt="Gambar Berita"
+                                onclick="document.getElementById('modalGambar').classList.remove('hidden')">
+                        </div>
+
+                        {{-- MODAL (Kotak Hitam Full Screen yang tersembunyi) --}}
+                        <div id="modalGambar"
+                            class="hidden fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-90 p-4 sm:p-10 cursor-zoom-out"
+                            onclick="this.classList.add('hidden')">
+
+                            {{-- Tombol Silang (X) di pojok kanan atas --}}
+                            <span
+                                class="absolute top-4 right-6 text-white text-4xl font-black hover:text-gray-300 transition">&times;</span>
+
+                            {{-- Gambar Ukuran Penuh --}}
+                            <img src="{{ asset('storage/' . $berita->gambar) }}"
+                                class="max-w-full max-h-full object-contain rounded-sm shadow-2xl"
+                                alt="Gambar Berita Full">
                         </div>
                     @endif
 
